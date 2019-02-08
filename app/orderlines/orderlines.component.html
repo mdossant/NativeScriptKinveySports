@@ -1,0 +1,27 @@
+<ActionBar title="{{title}}">
+    <ActionItem ios.position="left" (tap)="showOrders()"><Label [text]="backIcon" class="icon"></Label></ActionItem>
+    <NavigationButton visibility="collapsed"></NavigationButton>
+</ActionBar>
+
+<StackLayout [visibility]="(loading)?'visible':'collapse'">
+    <Image #img (loaded)="animateBall(img)" src="~/assets/img/ball.png" class="ball"></Image>
+</StackLayout>
+
+<StackLayout [visibility]="(loading)?'collapse':'visible'">
+    <GridLayout columns="3*,3*,3*,3*" height="50" class="listHeader">
+        <Label row="0" col="0" text="Line#"></Label>
+        <Label row="0" col="1" text="Item#"></Label>
+        <Label row="0" col="2" text="Qty"></Label>
+        <Label row="0" col="3" text="Price"></Label>
+    </GridLayout>
+    <ListView [items]="dsOrderLine" (itemTap)="showItem($event)" height="100%">
+        <ng-template let-dsOrderLine="item" let-odd="odd">
+        <GridLayout class="list-group-item listEven" columns="3*,3*,3*,3*" [ngClass]="{'listOdd':odd}">
+            <Label row="0" col="0" [text]="dsOrderLine.Linenum"></Label>
+            <Label row="0" col="1" [text]="dsOrderLine.Itemnum"></Label>
+            <Label row="0" col="2" [text]="dsOrderLine.Qty"></Label>
+            <Label row="0" col="3" [text]="'$'+dsOrderLine.Price"></Label>
+        </GridLayout>
+        </ng-template>
+    </ListView>
+</StackLayout>

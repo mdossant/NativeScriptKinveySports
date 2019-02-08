@@ -1,0 +1,24 @@
+<ActionBar title="{{title}}">
+    <ActionItem ios.position="left" (tap)="signOut()"><Label [text]="exitIcon" class="icon"></Label></ActionItem>
+    <ActionItem ios.position="right" (tap)="changeSort()"><Label [text]="sortIcon" class="icon"></Label></ActionItem>
+    <NavigationButton visibility="collapsed"></NavigationButton>
+</ActionBar>
+
+<StackLayout [visibility]="(loading)?'visible':'collapse'">
+    <Image #img (loaded)="animateBall(img)" src="~/assets/img/ball.png" class="ball"></Image>
+</StackLayout>
+
+<StackLayout [visibility]="(loading)?'collapse':'visible'">
+    <GridLayout columns="2*,11*" height="50" class="listHeader">
+        <Label row="0" col="0" text="#"></Label>
+        <Label row="0" col="1" text="Customer"></Label>
+    </GridLayout>
+    <ListView [items]="dsCustomer" (itemTap)="showOrders($event)" (loadMoreItems)="loadMoreItems()" height="100%">
+            <ng-template let-dsCustomer="item" let-odd="odd">
+            <GridLayout class="list-group-item listEven" columns="2*,11*" [ngClass]="{'listOdd':odd}">
+                <Label row="0" col="0" [text]="dsCustomer.CustNum"></Label>
+                <Label row="0" col="1" [text]="dsCustomer.Name"></Label>
+            </GridLayout>
+        </ng-template>
+    </ListView>
+</StackLayout>

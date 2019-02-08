@@ -1,0 +1,21 @@
+<ActionBar title="{{title}}">
+    <ActionItem ios.position="left" (tap)="showOrderLines()"><Label [text]="backIcon" class="icon"></Label></ActionItem>
+    <ActionItem ios.position="right" (tap)="takePicture()"><Label [text]="cameraIcon" class="icon"></Label></ActionItem>
+    <NavigationButton visibility="collapsed"></NavigationButton>
+</ActionBar>
+
+<StackLayout [visibility]="(loading)?'visible':'collapse'">
+    <Image #img (loaded)="animateBall(img)" src="~/assets/img/ball.png" class="ball"></Image>
+</StackLayout>
+
+<StackLayout [visibility]="(loading)?'collapse':'visible'">
+    <ListView [items]="itemData" (itemTap)="showOrders($event)" height="60%">
+            <ng-template let-itemData="item" let-odd="odd">
+            <GridLayout class="list-group-item listEven" columns="6*,6*">
+                <Label row="0" col="0" [text]="itemData.columnLabel" class="columnLabel"></Label>
+                <Label row="0" col="1" [text]="itemData.columnValue" class="columnValue"></Label>
+            </GridLayout>
+        </ng-template>
+    </ListView>
+    <Image id="itemImage"></Image>
+</StackLayout>

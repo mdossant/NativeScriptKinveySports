@@ -1,0 +1,15 @@
+<ActionBar>
+    <StackLayout orientation="horizontal"
+        ios:horizontalAlignment="center"
+        android:horizontalAlignment="center">
+        <Label text="Sports" class="title"></Label>
+    </StackLayout>
+    <NavigationButton visibility="collapsed"></NavigationButton>
+</ActionBar>
+
+<StackLayout backgroundColor="#EEE" style="padding:30px;">
+    <Image src="~/assets/img/ball.png" class="signinBall"></Image>
+    <TextField id="userName" hint="👤 Username" editable="{{fieldsEnabled}}" class="signinInput" (textChange)="newUsername($event)"></TextField>
+    <TextField id="password" hint="🔑 Password" editable="{{fieldsEnabled}}" class="signinInput" (textChange)="newPassword($event)" secure="true"></TextField>
+    <Button [text]="btnText" (tap)="signin()" isEnabled="{{btnEnabled}}" class="appButton"></Button>
+</StackLayout>
