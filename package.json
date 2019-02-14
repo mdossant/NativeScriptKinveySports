@@ -1,15 +1,15 @@
 {
-  "description": "Progress Sports NativeScript Application",
+  "description": "Progress Sports NativeScript Kinvey PASOE Application",
   "license": "SEE LICENSE IN <your-license-filename>",
   "readme": "NativeScript Application",
-  "repository": "<fill-your-repository-here>",
+  "repository": "https://github.com/mdossant/Sports.git",
   "nativescript": {
-    "id": "org.nativescript.Sports",
-    "tns-android": {
-      "version": "5.1.0"
-    },
+    "id": "com.progresssoftware.sports",
     "tns-ios": {
       "version": "5.1.1"
+    },
+    "tns-android": {
+      "version": "5.1.0"
     }
   },
   "dependencies": {

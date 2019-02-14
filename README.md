@@ -3,6 +3,6 @@ Sports NativeScript Mobile App with Kinvey RapidData/ProgressData to OpenEdge PA
 
 Initialize NativeScript project using tns init --force
 
-Make sure to add ios with tns platform add ios
+Use tns run to build and launch app on any device that is connected
 
-Notice: I haven't tested using android yet
+Note: android devices / simulators and iOS simulator will run without the need for certicate and provisioning profile
