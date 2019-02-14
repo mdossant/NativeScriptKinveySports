@@ -1,4 +1,4 @@
-// app: sports
+// app: Sports
 // class: signin
 // purpose: sign in to application
 // author: mauricio dos santos

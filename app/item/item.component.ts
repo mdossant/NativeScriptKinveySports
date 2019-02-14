@@ -1,4 +1,4 @@
-// app: sports
+// app: Sports
 // class: item
 // purpose: download and show item
 // author: mauricio dos santos

@@ -1,4 +1,4 @@
-// app: sports
+// app: Sports
 // class: AppRoutingModule
 // purpose: routing
 // author: mauricio dos santos

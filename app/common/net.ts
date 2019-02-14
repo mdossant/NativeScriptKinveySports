@@ -1,4 +1,4 @@
-// app: sports
+// app: Sports
 // class: net
 // purpose: network operations
 // author: mauricio dos santos
