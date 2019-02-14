@@ -10,8 +10,6 @@ import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Page } from 'tns-core-modules/ui/page';
-import { View } from 'tns-core-modules/ui/core/view';
-import {AnimationCurve} from 'tns-core-modules/ui/enums';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 
 @Component({
@@ -22,8 +20,6 @@ import * as dialog from 'tns-core-modules/ui/dialogs';
 
 export class CustomerComponent implements OnInit {
 
-    private loading: Boolean;
-    private ballState: Boolean;
     private title: String;
     private backIcon: String = String.fromCharCode(0xea40);
     private RepName: String;
@@ -35,20 +31,11 @@ export class CustomerComponent implements OnInit {
 
     ngOnInit(): void {
         console.log('customer ngOnInit');
-        this.loading = true;
+        this.app.loading = true;
         this.title = 'Loading orders...';
         this.RepName = this.screen.snapshot.params['RepName'];
         this._id = this.screen.snapshot.params['_id'];
         setTimeout(()=>this.getCustomer(),50);
-    }
-
-    animateBall(target: View) {
-        console.log('customer animateBall');
-        this.ballState = !this.ballState;
-        if (this.ballState)
-            target.animate({translate:{x:0,y:100},duration:200,curve:AnimationCurve.easeIn}).then(() => {if (this.loading) this.animateBall(target)})
-        else
-            target.animate({translate:{x:0,y:0},duration:500,curve:AnimationCurve.easeOut}).then(() => {if (this.loading) this.animateBall(target)})
     }
 
     private getCustomer () {
@@ -57,7 +44,7 @@ export class CustomerComponent implements OnInit {
             _id: this._id,
             onSuccess: (dsCustomer) => this.showCustomer(dsCustomer),
             onError: () => {
-                this.loading = false;
+                this.app.loading = false;
                 dialog.confirm({
                     title: 'Could Not Download Customer',
                     message: 'Ensure your have a strong network signal and sign in again.',
@@ -85,7 +72,7 @@ export class CustomerComponent implements OnInit {
     private showOrders (dsOrder) {
         console.log('customer showOrders',dsOrder.length);
         this.dsOrder = dsOrder;
-        this.loading = false;
+        this.app.loading = false;
     }
 
     private showOrder (e) {

@@ -10,8 +10,6 @@ import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Page } from 'tns-core-modules/ui/page';
-import { View } from 'tns-core-modules/ui/core/view';
-import {AnimationCurve} from 'tns-core-modules/ui/enums';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 
 @Component({
@@ -22,8 +20,6 @@ import * as dialog from 'tns-core-modules/ui/dialogs';
 
 export class OrdersComponent implements OnInit {
 
-    private loading: Boolean;
-    private ballState: Boolean;
     private title: String;
     private backIcon: String = String.fromCharCode(0xea40);
     private RepName: String;
@@ -35,21 +31,12 @@ export class OrdersComponent implements OnInit {
 
     ngOnInit(): void {
         console.log('orders ngOnInit');
-        this.loading = true;
+        this.app.loading = true;
         this.title = 'Loading orders...';
         this.RepName = this.screen.snapshot.params['RepName'];
         this.CustNum = this.screen.snapshot.params['CustNum'];
         this.Name = this.screen.snapshot.params['Name'];
         setTimeout(()=>this.getOrders(),50);
-    }
-
-    animateBall(target: View) {
-        console.log('orders animateBall');
-        this.ballState = !this.ballState;
-        if (this.ballState)
-            target.animate({translate:{x:0,y:100},duration:200,curve:AnimationCurve.easeIn}).then(() => {if (this.loading) this.animateBall(target)})
-        else
-            target.animate({translate:{x:0,y:0},duration:500,curve:AnimationCurve.easeOut}).then(() => {if (this.loading) this.animateBall(target)})
     }
 
     private getOrders () {
@@ -64,7 +51,7 @@ export class OrdersComponent implements OnInit {
         console.log('orders showOrders',dsOrder.length);
         this.dsOrder = dsOrder;
         this.title = this.Name;
-        this.loading = false;
+        this.app.loading = false;
     }
 
     private showOrderLines (e) {

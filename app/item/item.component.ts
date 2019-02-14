@@ -10,10 +10,8 @@ import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Page } from 'tns-core-modules/ui/page';
-import { View } from 'tns-core-modules/ui/core/view';
 import { Image } from 'tns-core-modules/ui/image';
 import { ImageSource } from 'tns-core-modules/image-source';
-import { AnimationCurve } from 'tns-core-modules/ui/enums';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 import * as camera from 'nativescript-camera';
 
@@ -25,8 +23,6 @@ import * as camera from 'nativescript-camera';
 
 export class ItemComponent implements OnInit {
 
-    private loading: Boolean;
-    private ballState: Boolean;
     private title: String;
     private backIcon: String = String.fromCharCode(0xea40);
     private cameraIcon: String = String.fromCharCode(0xe90f);
@@ -43,7 +39,7 @@ export class ItemComponent implements OnInit {
 
     ngOnInit(): void {
         console.log('item ngOnInit');
-        this.loading = true;
+        this.app.loading = true;
         this.title = 'Loading item...';
         this.RepName = this.screen.snapshot.params['RepName'];
         this.CustNum = this.screen.snapshot.params['CustNum'];
@@ -52,15 +48,6 @@ export class ItemComponent implements OnInit {
         this.Itemnum = this.screen.snapshot.params['Itemnum'];
         this.itemImage = <Image>this.page.getViewById('itemImage');
         setTimeout(()=>this.getItem(),50);
-    }
-
-    animateBall(target: View) {
-        console.log('item animateBall');
-        this.ballState = !this.ballState;
-        if (this.ballState)
-            target.animate({translate:{x:0,y:100},duration:200,curve:AnimationCurve.easeIn}).then(() => {if (this.loading) this.animateBall(target)})
-        else
-            target.animate({translate:{x:0,y:0},duration:500,curve:AnimationCurve.easeOut}).then(() => {if (this.loading) this.animateBall(target)})
     }
 
     private getItem () {
@@ -77,7 +64,7 @@ export class ItemComponent implements OnInit {
                 });
             },
             onError: () => {
-                this.loading = false;
+                this.app.loading = false;
                 dialog.confirm({
                     title: 'Could Not Download Item',
                     message: 'Ensure your have a strong network signal and sign in again.',
@@ -103,7 +90,7 @@ export class ItemComponent implements OnInit {
             let imgSrc = new ImageSource();
             imgSrc.fromBase64(dsItem.base64Image).then(() => this.itemImage.src = imgSrc);
         }
-        this.loading = false;
+        this.app.loading = false;
     }
 
     private takePicture () {

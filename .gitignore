@@ -5,3 +5,4 @@ package-lock.json
 tsconfig.esm.json
 tsconfig.json
 webpack.config.js
+app/.vscode

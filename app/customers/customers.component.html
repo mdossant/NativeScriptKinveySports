@@ -1,14 +1,19 @@
-<ActionBar title="{{title}}">
+<ActionBar>
+    <StackLayout orientation="horizontal"
+        ios:horizontalAlignment="center"
+        android:horizontalAlignment="center">
+        <Label [text]="title" class="title"></Label>
+    </StackLayout>
     <ActionItem ios.position="left" (tap)="signOut()"><Label [text]="exitIcon" class="icon"></Label></ActionItem>
     <ActionItem ios.position="right" (tap)="changeSort()"><Label [text]="sortIcon" class="icon"></Label></ActionItem>
     <NavigationButton visibility="collapsed"></NavigationButton>
 </ActionBar>
 
-<StackLayout [visibility]="(loading)?'visible':'collapse'">
-    <Image #img (loaded)="animateBall(img)" src="~/assets/img/ball.png" class="ball"></Image>
+<StackLayout [visibility]="(app.loading)?'visible':'collapse'">
+    <Image #img (loaded)="app.animateLoading(img)" src="~/assets/img/ball.png" class="ball"></Image>
 </StackLayout>
 
-<StackLayout [visibility]="(loading)?'collapse':'visible'">
+<StackLayout [visibility]="(app.loading)?'collapse':'visible'">
     <GridLayout columns="2*,11*" height="50" class="listHeader">
         <Label row="0" col="0" text="#"></Label>
         <Label row="0" col="1" text="Customer"></Label>

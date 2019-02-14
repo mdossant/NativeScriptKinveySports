@@ -1,14 +1,19 @@
-<ActionBar title="{{title}}">
+<ActionBar>
+    <StackLayout orientation="horizontal"
+        ios:horizontalAlignment="center"
+        android:horizontalAlignment="center">
+        <Label [text]="title" class="title"></Label>
+    </StackLayout>
     <ActionItem ios.position="left" (tap)="showOrderLines()"><Label [text]="backIcon" class="icon"></Label></ActionItem>
     <ActionItem ios.position="right" (tap)="takePicture()"><Label [text]="cameraIcon" class="icon"></Label></ActionItem>
     <NavigationButton visibility="collapsed"></NavigationButton>
 </ActionBar>
 
-<StackLayout [visibility]="(loading)?'visible':'collapse'">
-    <Image #img (loaded)="animateBall(img)" src="~/assets/img/ball.png" class="ball"></Image>
+<StackLayout [visibility]="(app.loading)?'visible':'collapse'">
+    <Image #img (loaded)="app.animateLoading(img)" src="~/assets/img/ball.png" class="ball"></Image>
 </StackLayout>
 
-<StackLayout [visibility]="(loading)?'collapse':'visible'">
+<StackLayout [visibility]="(app.loading)?'collapse':'visible'">
     <ListView [items]="itemData" (itemTap)="showOrders($event)" height="60%">
             <ng-template let-itemData="item" let-odd="odd">
             <GridLayout class="list-group-item listEven" columns="6*,6*">
