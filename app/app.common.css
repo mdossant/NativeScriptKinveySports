@@ -89,7 +89,7 @@ Button:disabled {
 }
 
 .appButton {
-    background-color: green;
+    background-color: red;
     color: white;
     font-size: 30px;
     margin-top: 20px;
