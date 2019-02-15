@@ -26,3 +26,11 @@
     margin-bottom: 15px;
     font-size: 30px;
 }
+
+.actionBarLeftIcon {
+    font-size: 0%;
+}
+
+.actionBarRightIcon {
+    padding-right: 15;
+}

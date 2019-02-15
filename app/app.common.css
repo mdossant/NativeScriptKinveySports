@@ -24,8 +24,12 @@ Button:disabled {
     background-color: #999;
 }
 
-.title {
+.signinTitle {
     font-size: 25;
+}
+
+.title {
+    font-size: 20;
 }
 
 .orangeActionBar {
@@ -36,43 +40,14 @@ Button:disabled {
     background-color: red;
 }
 
-.icon {
+.actionBarLeftIcon {
     font-family: 'IcoMoon-Free';
     font-size: 30;
 }
 
-.redIcon {
-    font-family: 'IcoMoon-Free';
-    font-size: 25;
-    color: red;
-}
-
-.blackIcon {
-    font-family: 'IcoMoon-Free';
-    font-size: 25;
-    color: black;
-}
-
-.inputIcon {
+.actionBarRightIcon {
     font-family: 'IcoMoon-Free';
     font-size: 30;
-    margin-right: 20px;
-    color: gray;
-}
-
-.mediumIcon {
-    font-family: 'IcoMoon-Free';
-    font-size: 30;
-}
-
-.rightMenuIcon {
-    padding-right: 30px;
-}
-
-.extraLargeRedIcon {
-    font-family: 'IcoMoon-Free';
-    font-size: 75;
-    color: red;
 }
 
 .signinBall {

@@ -1,10 +1,10 @@
 <ActionBar>
     <StackLayout orientation="horizontal"
         ios:horizontalAlignment="center"
-        android:horizontalAlignment="center">
-        <Label [text]="title" class="title"></Label>
+        android:horizontalAlignment="left">
+        <Label [text]="title" class="title" (tap)="showCustomers()"></Label>
     </StackLayout>
-    <ActionItem ios.position="left" (tap)="showCustomers()"><Label [text]="backIcon" class="icon"></Label></ActionItem>
+    <ActionItem ios.position="left" (tap)="showCustomers()"><Label [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
     <NavigationButton visibility="collapsed"></NavigationButton>
 </ActionBar>
 

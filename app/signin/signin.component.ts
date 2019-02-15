@@ -11,7 +11,7 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import * as dialog from 'tns-core-modules/ui/dialogs';
-import * as application from 'tns-core-modules/application';
+//import * as application from 'tns-core-modules/application';
 
 @Component({
     selector: 'ns-signin',
@@ -31,8 +31,8 @@ export class SigninComponent implements OnInit {
 
     ngOnInit(): void {
         console.log('signin ngOnInit');
-        // application.android.off(application.AndroidApplication.activityBackPressedEvent);
-        // application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => args.cancel = true);
+        //application.android.off(application.AndroidApplication.activityBackPressedEvent);
+        //application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => args.cancel = true);
         this.btnText = 'SIGN IN';
         this.userName = <TextField> this.page.getViewById('userName');
         this.password = <TextField> this.page.getViewById('password');
