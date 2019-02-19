@@ -6,3 +6,4 @@ tsconfig.esm.json
 tsconfig.json
 webpack.config.js
 app/.vscode
+**/*.js
