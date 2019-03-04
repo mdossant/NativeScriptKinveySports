@@ -75,6 +75,10 @@ Button:disabled {
     margin-top: 15px;
     margin-bottom: 15px;
     font-size: 30px;
+    color: white;
+    border-width: 2px;
+    border-color: white;
+    padding: 5px;
 }
 
 .listHeader {
