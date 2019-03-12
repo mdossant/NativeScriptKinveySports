@@ -151,7 +151,7 @@ export class net {
         query.equalTo('CustNum',Number(params.CustNum));
         query.limit = this.app.props.limit;
         query.fields = ['Ordernum','OrderDate','OrderStatus'];
-        query.ascending(params.OrderDate);
+        query.ascending('OrderDate');
         this.OrdersDS.find(query).subscribe(
             (orders) => {
                 console.log('------------ RESULTS # -----------',orders.length);

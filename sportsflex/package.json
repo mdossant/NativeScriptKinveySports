@@ -1,0 +1,18 @@
+{
+  "name": "sportsflex",
+  "version": "1.0.12",
+  "description": "A kinvey flex connector for sports app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mauricio dos Santos",
+  "license": "ISC",
+  "dependencies": {
+    "kinvey-flex-sdk": "^3.1.2",
+    "@angular/core": "^5.2.1",
+    "rxjs": "^5.5.6",
+    "base-64": "^0.1.0",
+    "xmlhttprequest": "^1.8.0"
+  }
+}
