@@ -56,9 +56,10 @@ export class ItemComponent implements OnInit {
             Itemnum: this.Itemnum,
             onSuccess: (dsItem) => {
                 this.net.getItemImage({
-                    _id: dsItem._id,
-                    onSuccess: (base64Image) => {
-                        dsItem.base64Image = base64Image;
+                    Itemnum: this.Itemnum,
+                    onSuccess: (dsItemImage) => {
+                        dsItem.itemImage_id = dsItemImage._id;
+                        dsItem.base64Image = dsItemImage.base64Image;
                         this.showItem(dsItem);
                     }
                 });
@@ -102,7 +103,8 @@ export class ItemComponent implements OnInit {
                     const base64Image = img.toBase64String("jpg",60);
                     this.itemImage.src = img;
                     this.net.saveItemImage({
-                        _id: this.dsItem['_id'],
+                        _id: this.dsItem['itemImage_id'],
+                        Itemnum: this.Itemnum,
                         base64Image: base64Image
                     })
                 });

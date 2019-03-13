@@ -252,33 +252,40 @@ export class net {
     }    
 
     // ===== getItemImage =====
-    // _id (string): item entity id
+    // Itemnum (string): item number
     // onSuccess (method): success callback method
     public getItemImage (params) {
-        console.log('net getItemImage',params._id);
-        let data = {base64Image:0};
-        this.ItemImagesDS.findById(params._id).subscribe(
+        console.log('net getItemImage',params.Itemnum);
+        let data = [];
+        const query = new Kinvey.Query;
+        query.equalTo('Itemnum',Number(params.Itemnum));
+        this.ItemImagesDS.find(query).subscribe(
             (itemImage) => {
-                console.log('------------ RESULTS # -----------',itemImage);
+                console.log('------------ RESULTS # -----------',itemImage.length);
                 data = itemImage;
             },
             (error: Kinvey.BaseError) => {
-                params.onSuccess(data.base64Image);
+                if (data.length > 0)
+                    params.onSuccess(data[0]);
+                else
+                    params.onSuccess([]);
                 return;
             },
-            () => params.onSuccess(data.base64Image)
+            () => params.onSuccess(data[0])
         );
     }
 
     // ===== saveItemImage =====
-    // _id (string): item entity id
+    // _id (string): itemImage entity id, if available
+    // Itemnum (string): item number
     // base64Image: base-64 encoded image data
     // onSuccess (method): success callback method
     // onError (method): error callback method
     public saveItemImage (params) {
-        console.log('net saveItemImage');
+        console.log('net saveItemImage',params.Itemnum);
         this.ItemImagesDS.save({
             _id: params._id,
+            Itemnum: Number(params.Itemnum),
             base64Image: params.base64Image
         }
         ).then((itemImage) => {
