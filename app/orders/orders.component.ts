@@ -22,6 +22,7 @@ export class OrdersComponent implements OnInit {
 
     private title: String;
     private backIcon: String = String.fromCharCode(0xea40);
+    private plusIcon: String = String.fromCharCode(0xea0a);
     private RepName: String;
     private CustNum: String;
     private Name: String;
@@ -43,7 +44,15 @@ export class OrdersComponent implements OnInit {
         console.log('orders getOrders',this.CustNum);
         this.net.getOrders({
             CustNum: this.CustNum,
-            onSuccess: (dsOrder) => this.showOrders(dsOrder)
+            onSuccess: (dsOrder) => this.showOrders(dsOrder),
+            onError: () => {
+                this.app.loading = false;
+                dialog.confirm({
+                    title: 'Could Not Download Orders',
+                    message: 'Ensure your have a strong network signal and try again.',
+                    okButtonText: 'OK'
+                }).then(()=>this.showCustomers());
+            }
         })
     }
 
@@ -62,5 +71,9 @@ export class OrdersComponent implements OnInit {
     private showCustomers () {
         console.log('orders showCustomers');
         this.router.navigate(['/customers',this.RepName],{clearHistory:true,transition:{name:'fade'}});
+    }
+
+    private addOrder () {
+        console.log('order addOrder');
     }
 }

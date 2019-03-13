@@ -33,7 +33,7 @@ export class net {
     // userName (string): user login id
     // password (string): password
     // onSuccess (method): success callback method
-    // onError (method, optional): error callback method
+    // onError (method): error callback method
     public authenticate (params) {
         console.log('net authenticate',params.userName,params.password);
         Kinvey.ping()
@@ -71,13 +71,14 @@ export class net {
     // loadMoreItems (boolean): load next batch or first batch
     // sortField (string): field on which to sort entities
     // onSuccess (method): success callback method
+    // onError (method): error callback method
     public getCustomers (params) {
         console.log('net getCustomers');
         if (params.loadMoreItems)
             this.skip = this.skip + this.app.props.limit;
         else
             this.skip = 0;
-        let skipFirstResults = false;
+        let data = [];
         let query = new Kinvey.Query;
         query.equalTo('SalesRep',this.userName);
         query.skip = this.skip;
@@ -87,66 +88,78 @@ export class net {
         this.CustomersDS.find(query).subscribe(
             (customers) => {
                 console.log('------------ RESULTS # -----------',customers.length);
-                if (skipFirstResults)
-                    params.onSuccess(customers);
-                skipFirstResults = true;
+                data = customers;
             }, 
             (error: Kinvey.BaseError) => {
                 console.error('------------- ERROR fetching customers -------------',error.name);
-                params.onError();
-            }
+                if (data.length > 0)
+                    params.onSuccess(data);
+                else
+                    params.onError();
+                return;
+            },
+            () => params.onSuccess(data)
         );
     }
 
     // ===== getCustomer =====
     // _id (string): customer entity id
     // onSuccess (method): success callback method
+    // onError (method): error callback method
     public getCustomer (params) {
         console.log('net getCustomers',params._id);
-        let skipFirstResults = false;
+        let data = {};
         this.CustomersDS.findById(params._id).subscribe(
             (customer) => {
                 console.log('------------ CUSTOMER -----------',customer);
-                if (skipFirstResults)
-                    params.onSuccess(customer);
-                skipFirstResults = true;
+                data = customer;
             }, 
             (error: Kinvey.BaseError) => {
                 console.error('------------ ERROR fetching customer --------------',error.name);
-                params.onError();
-            }
+                if (data)
+                    params.onSuccess(data);
+                else
+                    params.onError();
+                return;
+            },
+            () => params.onSuccess(data)
         );
     }
 
     // ===== getSalesRep =====
     // SalesRep (string): sales rep 3-letter acronym
     // onSuccess (method): success callback method
+    // onError (method): error callback method
     public getSalesRep (params) {
         console.log('net getSalesRep',params.SalesRep);
-        let skipFirstResults = false;
+        let data = [];
         let query = new Kinvey.Query;
         query.equalTo('SalesRep',params.SalesRep);
         query.fields = ['RepName'];
         this.SalesRepsDS.find(query).subscribe(
             (rep) => {
                 console.log('------------ SALES REP -----------',rep);
-                if (skipFirstResults)
-                    params.onSuccess(rep[0].RepName);
-                skipFirstResults = true;
+                data = rep;
             },
             (error: Kinvey.BaseError) => {
                 console.error('------------ ERROR fetching sales rep ------------',error.name);
-                params.onError();
-            }
+                if (data.length > 0)
+                    params.onSuccess(data[0].RepName);
+                else
+                    params.onError();
+                return;
+            },
+            () => params.onSuccess(data[0].RepName)
         );
     }
 
     // ===== getOrders =====
     // CustNum (string): customer number
     // onSuccess (method): success callback method
+    // onError (method): error callback method
     public getOrders (params) {
         console.log('net getOrders',params.CustNum);
-        let skipFirstResults = false;
+        let data = [];
         let query = new Kinvey.Query;
         query.equalTo('CustNum',Number(params.CustNum));
         query.limit = this.app.props.limit;
@@ -155,23 +168,27 @@ export class net {
         this.OrdersDS.find(query).subscribe(
             (orders) => {
                 console.log('------------ RESULTS # -----------',orders.length);
-                if (skipFirstResults)
-                    params.onSuccess(orders);
-                skipFirstResults = true;
-            }, 
+                data = orders;
+            },
             (error: Kinvey.BaseError) => {
-                console.error('------------ ERROR fetching orders -------------',error.name);
-                params.onError();
-            }
+                console.error('------------ ERROR fetching orders -------------',error.name,data.length);
+                if (data.length > 0)
+                    params.onSuccess(data);
+                else
+                    params.onError();
+                return;
+            },
+            () => params.onSuccess(data)
         );
     }
 
     // ===== getOrderLines =====
     // Ordernum (string): order number
     // onSuccess (method): success callback method
+    // onError (method): error callback method
     public getOrderLines (params) {
         console.log('net getOrderLines',params.Ordernum);
-        let skipFirstResults = false;
+        let data = [];
         let query = new Kinvey.Query;
         query.equalTo('Ordernum',Number(params.Ordernum));
         query.limit = this.app.props.limit;
@@ -180,41 +197,50 @@ export class net {
         this.OrderLinesDS.find(query).subscribe(
             (lines) => {
                 console.log('------------ RESULTS # -----------',lines.length);
-                if (skipFirstResults)
-                    params.onSuccess(lines);
-                skipFirstResults = true;
+                data = lines;
             }, 
             (error: Kinvey.BaseError) => {
                 console.error('------------ ERROR fetching order lines -------------',error.name);
-                params.onError();
-            }
+                if (data.length > 0)
+                    params.onSuccess(data);
+                else
+                    params.onError();
+                return;
+            },
+            () => params.onSuccess(data)
         );
     }
 
     // ===== getItem =====
     // Itemnum (string): item number
     // onSuccess (method): success callback method
+    // onError (method): error callback method
     public getItem (params) {
         console.log('net getItem',params.Itemnum);
-        let skipFirstResults = false;
+        let data = [];
         const query = new Kinvey.Query;
         query.equalTo('Itemnum',Number(params.Itemnum));
         this.ItemsDS.find(query).subscribe(
             (item) => {
-                if (skipFirstResults)
-                    params.onSuccess(item[0]);
-                skipFirstResults = true;
+                console.log('------------ RESULTS # -----------',item.length);
+                data = item;
             },
             (error: Kinvey.BaseError) => {
                 console.error('------------- ERROR fetching item --------------',error.name);
-                params.onError();
-            }
+                if (data.length > 0)
+                    params.onSuccess(data[0]);
+                else
+                    params.onError();
+                return;
+            },
+            () => params.onSuccess(data[0])
         );
     }
 
     // ===== saveItem =====
     // itemData (string): item data
     // onSuccess (method): success callback method
+    // onError (method): error callback method
     public saveItem (params) {
         console.log('net saveItem');
         this.ItemsDS.save(params.itemData
@@ -230,16 +256,17 @@ export class net {
     // onSuccess (method): success callback method
     public getItemImage (params) {
         console.log('net getItemImage',params._id);
-        let skipFirstResults = false;
+        let data = {base64Image:0};
         this.ItemImagesDS.findById(params._id).subscribe(
             (itemImage) => {
-                if (skipFirstResults)
-                    params.onSuccess(itemImage.base64Image);
-                skipFirstResults = true;
+                console.log('------------ RESULTS # -----------',itemImage);
+                data = itemImage;
             },
             (error: Kinvey.BaseError) => {
-                params.onSuccess();
-            }
+                params.onSuccess(data.base64Image);
+                return;
+            },
+            () => params.onSuccess(data.base64Image)
         );
     }
 
@@ -247,6 +274,7 @@ export class net {
     // _id (string): item entity id
     // base64Image: base-64 encoded image data
     // onSuccess (method): success callback method
+    // onError (method): error callback method
     public saveItemImage (params) {
         console.log('net saveItemImage');
         this.ItemImagesDS.save({
@@ -257,6 +285,7 @@ export class net {
             console.log('SAVED ITEM IMAGE');
         }).catch((err)=> {
             console.error('------------- ERROR saving item image -------------',err.name);
+            params.onError();
         });
     }    
 }

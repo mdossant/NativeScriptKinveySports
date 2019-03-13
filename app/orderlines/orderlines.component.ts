@@ -22,6 +22,7 @@ export class OrderLinesComponent implements OnInit {
 
     private title: String;
     private backIcon: String = String.fromCharCode(0xea40);
+    private plusIcon: String = String.fromCharCode(0xea0a);
     private RepName: String;
     private CustNum: String;
     private Ordernum: String;
@@ -64,5 +65,9 @@ export class OrderLinesComponent implements OnInit {
     private showOrders () {
         console.log('orderlines showOrder');
         this.router.navigate(['/orders',this.RepName,this.CustNum,this.Name],{clearHistory:true,transition:{name:'fade'}});
+    }
+
+    private addLine () {
+        console.log('order addLine');
     }
 }

@@ -67,7 +67,7 @@ export class ItemComponent implements OnInit {
                 this.app.loading = false;
                 dialog.confirm({
                     title: 'Could Not Download Item',
-                    message: 'Ensure your have a strong network signal and sign in again.',
+                    message: 'Ensure your have a strong network signal and try again.',
                     okButtonText: 'OK'
                 }).then(()=>this.showOrderLines());
             }

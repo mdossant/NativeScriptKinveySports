@@ -47,7 +47,7 @@ export class CustomersComponent implements OnInit {
                 this.app.loading = false;
                 dialog.confirm({
                     title: 'Could Not Download Customers',
-                    message: 'Ensure your have a strong network signal and sign in again.',
+                    message: 'Ensure your have a strong network signal and try again.',
                     okButtonText: 'OK'
                 }).then(()=>this.signOut());
             }
