@@ -27,6 +27,7 @@ export class OrdersComponent implements OnInit {
     private CustNum: String;
     private Name: String;
     private dsOrder = {};
+    private months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
     public constructor (private app: app, private net: net, private page: Page, private router: RouterExtensions, private screen: ActivatedRoute) {}
 
@@ -59,6 +60,13 @@ export class OrdersComponent implements OnInit {
     private showOrders (dsOrder) {
         console.log('orders showOrders',dsOrder.length);
         this.dsOrder = dsOrder;
+        for (var i=0; i<dsOrder.length; i++) {
+            const date = new Date(dsOrder[i].OrderDate);
+            const month = date.getMonth();
+            const day = date.getDate();
+            const year = date.getFullYear();
+            dsOrder[i].formattedDate = this.months[month] + ' ' + day + ', ' + year;
+        }
         this.title = this.Name;
         this.app.loading = false;
     }
