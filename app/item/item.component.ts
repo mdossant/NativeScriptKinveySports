@@ -9,7 +9,7 @@ import { net } from '../common/net';
 import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { Page } from 'tns-core-modules/ui/page';
+import { Page, View } from 'tns-core-modules/ui/page';
 import { Image } from 'tns-core-modules/ui/image';
 import { ImageSource } from 'tns-core-modules/image-source';
 import * as dialog from 'tns-core-modules/ui/dialogs';
@@ -26,6 +26,8 @@ export class ItemComponent implements OnInit {
     private title: String;
     private backIcon: String = String.fromCharCode(0xea40);
     private cameraIcon: String = String.fromCharCode(0xe90f);
+    private leftIcon: View;
+    private rightIcon: View;
     private RepName: String;
     private CustNum: String;
     private Ordernum: String;
@@ -47,6 +49,8 @@ export class ItemComponent implements OnInit {
         this.Ordernum = this.screen.snapshot.params['Ordernum'];
         this.Itemnum = this.screen.snapshot.params['Itemnum'];
         this.itemImage = <Image>this.page.getViewById('itemImage');
+        this.leftIcon = <View>this.page.getViewById('leftIcon');
+        this.rightIcon = <View>this.page.getViewById('rightIcon');
         setTimeout(()=>this.getItem(),50);
     }
 
@@ -96,25 +100,36 @@ export class ItemComponent implements OnInit {
 
     private takePicture () {
         console.log('item takePicture',camera.isAvailable());
-        if (camera.isAvailable())
-            camera.takePicture({keepAspectRatio:true,width:120}).then((imageAsset) => {
-                let imgSrc = new ImageSource();
-                imgSrc.fromAsset(imageAsset).then((img)=>{
-                    const base64Image = img.toBase64String("jpg",60);
-                    this.itemImage.src = img;
-                    this.net.saveItemImage({
-                        _id: this.dsItem['itemImage_id'],
-                        Itemnum: this.Itemnum,
-                        base64Image: base64Image
-                    })
+        this.app.animateIcon({
+            target: this.rightIcon,
+            onSuccess: () => {
+                if (!camera.isAvailable()) {
+                    dialog.alert('Camera is not available in simulator.');
+                    return;
+                }
+                camera.takePicture({keepAspectRatio:true,width:120}).then((imageAsset) => {
+                    let imgSrc = new ImageSource();
+                    imgSrc.fromAsset(imageAsset).then((img)=>{
+                        const base64Image = img.toBase64String("jpg",60);
+                        this.itemImage.src = img;
+                        this.net.saveItemImage({
+                            _id: this.dsItem['itemImage_id'],
+                            Itemnum: this.Itemnum,
+                            base64Image: base64Image
+                        })
+                    });
                 });
-            });
-        else
-            dialog.alert('Camera is not available in simulator.');
+            }
+        });
     }
 
     private showOrderLines () {
         console.log('item showOrderLines');
-        this.router.navigate(['/orderlines',this.RepName,this.CustNum,this.Name,this.Ordernum],{clearHistory:true,transition:{name:'fade'}});
+        this.app.animateIcon({
+            target: this.leftIcon,
+            onSuccess: () => {
+                this.router.navigate(['/orderlines',this.RepName,this.CustNum,this.Name,this.Ordernum],{clearHistory:true,transition:{name:'fade'}});
+            }
+        });
     }
 }

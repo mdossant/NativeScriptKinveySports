@@ -9,7 +9,7 @@ import { net } from '../common/net';
 import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { Page } from 'tns-core-modules/ui/page';
+import { Page, View } from 'tns-core-modules/ui/page';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 
 @Component({
@@ -24,6 +24,8 @@ export class CustomersComponent implements OnInit {
     private RepName: String;
     private exitIcon: String = String.fromCharCode(0xea14);
     private sortIcon: String = String.fromCharCode(0xea48);
+    private leftIcon: View;
+    private rightIcon: View;
     private dsCustomer: Array<any> = [];
     private sortByName: Boolean = false;
 
@@ -34,6 +36,8 @@ export class CustomersComponent implements OnInit {
         this.app.loading = true;
         this.RepName = this.screen.snapshot.params['RepName'];
         this.title = 'Loading customers...';
+        this.leftIcon = <View>this.page.getViewById('leftIcon');
+        this.rightIcon = <View>this.page.getViewById('rightIcon');
         setTimeout(()=>this.getCustomers(false),50);
     }
 
@@ -69,10 +73,14 @@ export class CustomersComponent implements OnInit {
 
     private changeSort () {
         console.log('customers changeSort');
-        this.sortByName = !this.sortByName;
-        this.dsCustomer = [];
-        this.getCustomers(false);
-
+        this.app.animateIcon({
+            target: this.rightIcon,
+            onSuccess: () => {
+                this.sortByName = !this.sortByName;
+                this.dsCustomer = [];
+                this.getCustomers(false);
+            }
+        });
     }
 
     private showCustomer (e) {
@@ -87,6 +95,11 @@ export class CustomersComponent implements OnInit {
 
     private signOut () {
         console.log('customers signOut');
-        this.router.navigate(['/'],{clearHistory:true,transition:{name:'fade'}});
+        this.app.animateIcon({
+            target: this.leftIcon,
+            onSuccess: () => {
+                this.router.navigate(['/'],{clearHistory:true,transition:{name:'fade'}});
+            }
+        });
     }
 }

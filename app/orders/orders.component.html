@@ -4,8 +4,8 @@
         android:horizontalAlignment="left">
         <Label [text]="title" class="title" (tap)="showCustomers()"></Label>
     </StackLayout>
-    <ActionItem ios.position="left" (tap)="showCustomers()"><Label [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
-    <ActionItem ios.position="right" (tap)="addOrder()"><Label [text]="plusIcon" class="actionBarRightIcon"></Label></ActionItem>
+    <ActionItem ios.position="left" (tap)="showCustomers()"><Label id="leftIcon" [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
+    <ActionItem ios.position="right" (tap)="addOrder()"><Label id="rightIcon" [text]="plusIcon" class="actionBarRightIcon"></Label></ActionItem>
     <NavigationButton visibility="collapsed"></NavigationButton>
 </ActionBar>
 

@@ -4,8 +4,8 @@
         android:horizontalAlignment="left">
         <Label [text]="title" class="title" (tap)="signOut()"></Label>
     </StackLayout>
-    <ActionItem ios.position="left" (tap)="signOut()"><Label [text]="exitIcon" class="actionBarLeftIcon"></Label></ActionItem>
-    <ActionItem ios.position="right" (tap)="changeSort()"><Label [text]="sortIcon" class="actionBarRightIcon"></Label></ActionItem>
+    <ActionItem ios.position="left" (tap)="signOut()"><Label id="leftIcon" [text]="exitIcon" class="actionBarLeftIcon"></Label></ActionItem>
+    <ActionItem ios.position="right" (tap)="changeSort()"><Label id="rightIcon" [text]="sortIcon" class="actionBarRightIcon"></Label></ActionItem>
     <NavigationButton visibility="collapsed"></NavigationButton>
 </ActionBar>
 

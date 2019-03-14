@@ -9,7 +9,7 @@ import { net } from '../common/net';
 import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { Page } from 'tns-core-modules/ui/page';
+import { Page, View } from 'tns-core-modules/ui/page';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 
 @Component({
@@ -23,6 +23,8 @@ export class OrdersComponent implements OnInit {
     private title: String;
     private backIcon: String = String.fromCharCode(0xea40);
     private plusIcon: String = String.fromCharCode(0xea0a);
+    private leftIcon: View;
+    private rightIcon: View;
     private RepName: String;
     private CustNum: String;
     private Name: String;
@@ -38,6 +40,8 @@ export class OrdersComponent implements OnInit {
         this.RepName = this.screen.snapshot.params['RepName'];
         this.CustNum = this.screen.snapshot.params['CustNum'];
         this.Name = this.screen.snapshot.params['Name'];
+        this.leftIcon = <View>this.page.getViewById('leftIcon');
+        this.rightIcon = <View>this.page.getViewById('rightIcon');
         setTimeout(()=>this.getOrders(),50);
     }
 
@@ -78,10 +82,21 @@ export class OrdersComponent implements OnInit {
 
     private showCustomers () {
         console.log('orders showCustomers');
-        this.router.navigate(['/customers',this.RepName],{clearHistory:true,transition:{name:'fade'}});
+        this.app.animateIcon({
+            target: this.leftIcon,
+            onSuccess: () => {
+                this.router.navigate(['/customers',this.RepName],{clearHistory:true,transition:{name:'fade'}});
+            }
+        });
     }
 
     private addOrder () {
         console.log('order addOrder');
+        this.app.animateIcon({
+            target: this.rightIcon,
+            onSuccess: () => {
+                console.log('will add order');
+            }
+        });
     }
 }

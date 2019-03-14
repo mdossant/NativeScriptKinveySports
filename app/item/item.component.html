@@ -4,8 +4,8 @@
         android:horizontalAlignment="left">
         <Label [text]="title" class="title" (tap)="showOrderLines()"></Label>
     </StackLayout>
-    <ActionItem ios.position="left" (tap)="showOrderLines()"><Label [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
-    <ActionItem ios.position="right" (tap)="takePicture()"><Label [text]="cameraIcon" class="actionBarRightIcon"></Label></ActionItem>
+    <ActionItem ios.position="left" (tap)="showOrderLines()"><Label id="leftIcon" [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
+    <ActionItem ios.position="right" (tap)="takePicture()"><Label id="rightIcon" [text]="cameraIcon" class="actionBarRightIcon"></Label></ActionItem>
     <NavigationButton visibility="collapsed"></NavigationButton>
 </ActionBar>
 
