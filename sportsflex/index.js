@@ -22,22 +22,33 @@ sdk.service((err, flex) => {
         'States': 'ttState'
     };
 
-    registerServiceObject('SalesReps');
-    registerServiceObject('Customers');
-    registerServiceObject('Orders');
-    registerServiceObject('OrderLines');
-    registerServiceObject('Items');
-    registerServiceObject('States');
+    registerServiceObject('SalesReps','R');
+    registerServiceObject('Customers','R');
+    registerServiceObject('Orders','CRUD');
+    registerServiceObject('OrderLines','CRUD');
+    registerServiceObject('Items','R');
+    registerServiceObject('States','R');
 
-    function registerServiceObject (name) {
+    function registerServiceObject (name,operations) {
         const obj = data.serviceObject(name);
-        obj.onGetAll(getAll);
-        obj.onGetByQuery(getAll);
-        obj.onGetById(getById);
+        if (operations.indexOf('C') > -1) {
+            obj.onInsert(insert);
+        }
+        if (operations.indexOf('R') > -1) {
+            obj.onGetAll(getByQuery);
+            obj.onGetByQuery(getByQuery);
+            obj.onGetById(getById);
+        }
+        if (operations.indexOf('U') > -1) {
+            obj.onUpdate(update);
+        }
+        if (operations.indexOf('D') > -1) {
+            obj.onDeleteByQuery(deleteByQuery);
+        }
     }
 
-    function getAll(context, complete, modules) {
-        console.log('getAll query',JSON.stringify(context.query));
+    function getByQuery(context, complete, modules) {
+        console.log('getByQuery query',JSON.stringify(context.query));
         console.log('service object', context.serviceObjectName);
         console.log('table', tables[context.serviceObjectName]);
 
@@ -73,14 +84,14 @@ sdk.service((err, flex) => {
         console.log('top', top);
         console.log('orderBy', orderBy);
 
-        const session = progressCore.progress.data.getSession({
+        progressCore.progress.data.getSession({
             name: 'sportsflex',
             serviceURI: serviceURI,
             catalogURI: catalogURI,
             authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
             //username: 'm',
             //password: 'm',
-        }).then(session => {
+        }).then(()=>{
             const jsdo = new progressCore.progress.data.JSDO({
                 name: context.serviceObjectName
             });
@@ -96,14 +107,73 @@ sdk.service((err, flex) => {
                     skip: skip
                 })
             ).toPromise();
-        }).then(response => {
+        }).then((response) => {
             console.log('number of records retrieved',response.data.length);
             complete().setBody(JSON.stringify(response.data)).ok().next();
-        }).catch(err => {
+        }).catch((err) => {
             console.log('err.message',err.message);
             console.log('err.stack',err.stack);
             complete(err).runtimeError().next();
         });
+    }
+
+    function insert(context, complete, modules) {
+        console.log('insert context',JSON.stringify(context));
+        console.log('insert body',JSON.stringify(context.body));
+        console.log('service object', context.serviceObjectName);
+        console.log('table', tables[context.serviceObjectName]);
+
+        if (!context.body.CustNum) {
+            console.log('Invalid data for insert.');
+            complete('Invalid data for insert.').runtimeError().next();
+            return;
+        }
+
+        progressCore.progress.data.getSession({
+            name: 'sportsflex',
+            serviceURI: serviceURI,
+            catalogURI: catalogURI,
+            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
+            //username: 'm',
+            //password: 'm',
+        }).then(() => {
+            const jsdo = new progressCore.progress.data.JSDO({
+                name: context.serviceObjectName
+            });
+            const ds = new ngDataSource.DataSource({
+                jsdo: jsdo,
+                tableRef: tables[context.serviceObjectName]
+            });
+            ds.create({
+                CustNum: context.body.CustNum
+            });
+            return ds.saveChanges().toPromise();
+        }).then((response) => {
+                console.log('record created',response.dsOrder.ttOrder[0].Ordernum);
+                complete().setBody(JSON.stringify(response.dsOrder.ttOrder[0])).ok().next();
+        }).catch((err) => {
+            console.log('err.message',err.message);
+            console.log('err.stack',err.stack);
+            complete(err).runtimeError().next();
+        });
+    }
+
+    function update(context, complete, modules) {
+        console.log('update context',JSON.stringify(context));
+        console.log('update query',JSON.stringify(context.query));
+        console.log('service object', context.serviceObjectName);
+        console.log('table', tables[context.serviceObjectName]);
+        console.log('record updated');
+        complete().setBody(JSON.stringify('RECORD PSEUDO UPDATED')).ok().next();
+    }
+
+    function deleteByQuery(context, complete, modules) {
+        console.log('deleteByQuery context',JSON.stringify(context));
+        console.log('deleteByQuery query',JSON.stringify(context.query));
+        console.log('service object', context.serviceObjectName);
+        console.log('table', tables[context.serviceObjectName]);
+        console.log('record deleted');
+        complete().setBody(JSON.stringify('RECORD PSEUDO DELETED')).ok().next();
     }
 
     function getById(context, complete, modules) {

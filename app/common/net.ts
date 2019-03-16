@@ -295,4 +295,23 @@ export class net {
             params.onError();
         });
     }    
+
+    // ===== addOrder =====
+    // CustNum (string): customer number
+    // onSuccess (method): success callback method
+    // onError (method): error callback method
+    public addOrder (params) {
+        console.log('net saveOrder',params.CustNum);
+        this.OrdersDS.save({
+            CustNum: Number(params.CustNum),
+            SalesRep: 'ignore'
+        }
+        ).then((order) => {
+            console.log('SAVED ORDER',order);
+            params.onSuccess(order.Ordernum);
+        }).catch((err)=> {
+            console.error('------------- ERROR saving order -------------',err.name);
+            params.onError();
+        });
+    }    
 }

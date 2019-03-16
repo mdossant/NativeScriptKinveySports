@@ -1,7 +1,7 @@
 {
   "name": "sportsflex",
-  "version": "1.0.12",
-  "description": "A kinvey flex connector for sports app",
+  "version": "1.0.14",
+  "description": "A kinvey flex jsdo connector for sports app",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

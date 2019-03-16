@@ -9,7 +9,7 @@ import { net } from '../common/net';
 import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { Page, View } from 'tns-core-modules/ui/page';
+import { Page, View, Color } from 'tns-core-modules/ui/page';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 
 @Component({
@@ -25,11 +25,14 @@ export class OrdersComponent implements OnInit {
     private plusIcon: String = String.fromCharCode(0xea0a);
     private leftIcon: View;
     private rightIcon: View;
+    private enabledButtonColor: Color = new Color('white');
+    private disabledButtonColor: Color = new Color('rgb(190,190,190)');
     private RepName: String;
     private CustNum: String;
     private Name: String;
     private dsOrder = {};
     private months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    private addingOrder: Boolean = false;
 
     public constructor (private app: app, private net: net, private page: Page, private router: RouterExtensions, private screen: ActivatedRoute) {}
 
@@ -77,11 +80,15 @@ export class OrdersComponent implements OnInit {
 
     private showOrderLines (e) {
         console.log('orders showOrderLines',e.index);
+        if (this.addingOrder)
+            return;
         this.router.navigate(['/orderlines',this.RepName,this.CustNum,this.Name,this.dsOrder[e.index].Ordernum],{clearHistory:true,transition:{name:'fade'}});
     }
 
     private showCustomers () {
         console.log('orders showCustomers');
+        if (this.addingOrder)
+            return;
         this.app.animateIcon({
             target: this.leftIcon,
             onSuccess: () => {
@@ -92,10 +99,34 @@ export class OrdersComponent implements OnInit {
 
     private addOrder () {
         console.log('order addOrder');
+        if (this.addingOrder)
+            return;
         this.app.animateIcon({
             target: this.rightIcon,
             onSuccess: () => {
-                console.log('will add order');
+                console.log('will add order now');
+                this.addingOrder = true;
+                this.leftIcon.color = this.disabledButtonColor;
+                this.rightIcon.color = this.disabledButtonColor;
+                this.title = 'Adding order...';
+                this.net.addOrder({
+                    CustNum: this.CustNum,
+                    onSuccess: (Ordernum) => {
+                        this.router.navigate(['/orderlines',this.RepName,this.CustNum,this.Name,Ordernum],{clearHistory:true,transition:{name:'fade'}});
+                    },
+                    onError: () => {
+                        dialog.confirm({
+                            title: 'Could Not Add Order',
+                            message: 'Ensure your have a strong network signal and try again.',
+                            okButtonText: 'OK'
+                        }).then(() => {
+                            this.addingOrder = false;
+                            this.leftIcon.color = this.enabledButtonColor;
+                            this.rightIcon.color = this.enabledButtonColor;
+                            this.title = this.Name;
+                        })
+                    }
+                });
             }
         });
     }
