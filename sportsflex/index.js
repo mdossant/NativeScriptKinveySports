@@ -9,10 +9,10 @@ const ngDataSource = require('./jsdo/progress.data.node');
 
 const serviceURI = 'http://ec2-3-80-82-104.compute-1.amazonaws.com:8080';
 const catalogURI = 'http://ec2-3-80-82-104.compute-1.amazonaws.com:8080/static/SportsREST.json';
+const username = 'm';
+const password = 'm';
 
 sdk.service((err, flex) => {
-    const data = flex.data;
-
     const tables = {
         'SalesReps': 'ttSalesRep',
         'Customers': 'ttCustomer',
@@ -29,8 +29,10 @@ sdk.service((err, flex) => {
     registerServiceObject('Items','R');
     registerServiceObject('States','R');
 
+    flex.functions.register('GetOrderDetail',GetOrderDetail);
+
     function registerServiceObject (name,operations) {
-        const obj = data.serviceObject(name);
+        const obj = flex.data.serviceObject(name);
         if (operations.indexOf('C') > -1) {
             obj.onInsert(insert);
         }
@@ -89,8 +91,8 @@ sdk.service((err, flex) => {
             serviceURI: serviceURI,
             catalogURI: catalogURI,
             authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
-            //username: 'm',
-            //password: 'm',
+            //username: username,
+            //password: password,
         }).then(()=>{
             const jsdo = new progressCore.progress.data.JSDO({
                 name: context.serviceObjectName
@@ -128,8 +130,8 @@ sdk.service((err, flex) => {
             serviceURI: serviceURI,
             catalogURI: catalogURI,
             authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
-            //username: 'm',
-            //password: 'm',
+            //username: username,
+            //password: password,
         }).then(() => {
             const jsdo = new progressCore.progress.data.JSDO({
                 name: context.serviceObjectName
@@ -173,23 +175,32 @@ sdk.service((err, flex) => {
         console.log('service object', context.serviceObjectName);
         console.log('table', tables[context.serviceObjectName]);
         console.log('entityId',context.entityId);
-        let entity = [{
-            "_id": "8",
-            "SalesRep": "RDR",
-            "RepName": "Robert Flex",
-            "Region": "Austria",
-            "MonthQuota": [4200, 4326, 4456, 4590, 4728, 4870, 5016, 5166, 5321, 5481, 5645, 5814],
-            "_acl": {
-                "creator": "kid_B1fDHsXzN"
-            },
-            "_kmd": {
-                "lmt": "2019-01-15T22:53:19.413Z",
-                "ect": "2019-01-15T22:53:19.413Z"
-            }
-        }];
-        if (!entity)
-          return complete().notFound('The entity could not be found').next();
-        else
-          return complete().setBody(JSON.stringify(entity)).ok().next();
+        complete().setBody('ENTITY TO BE RETURNED').ok().next();
+    }
+
+    function GetOrderDetail(context, complete, modules) {
+        console.log('GetOrderDetail context',JSON.stringify(context));
+        console.log('GetOrderDetail body',JSON.stringify(context.body));
+
+        progressCore.progress.data.getSession({
+            name: 'sportsflex',
+            serviceURI: serviceURI,
+            catalogURI: catalogURI,
+            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
+            //username: username,
+            //password: password,
+        }).then(()=>{
+            const jsdo = new progressCore.progress.data.JSDO({
+                name: 'Orders'
+            });
+            return jsdo.invoke('GetOrderDetail',context.body);
+        }).then((jsdo) => {
+            console.log('jsdo.request.response',jsdo.request.response);
+            complete().setBody(jsdo.request.response.dsOrderDetail).ok().next();
+        }).catch((err) => {
+            console.log('err.message',err.message);
+            console.log('err.stack',err.stack);
+            complete(err).runtimeError().next();
+        });
     }
 });

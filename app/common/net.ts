@@ -301,16 +301,33 @@ export class net {
     // onSuccess (method): success callback method
     // onError (method): error callback method
     public addOrder (params) {
-        console.log('net saveOrder',params.CustNum);
+        console.log('net addOrder',params.CustNum);
         this.OrdersDS.save({
-            CustNum: Number(params.CustNum),
-            SalesRep: 'ignore'
+            CustNum: Number(params.CustNum)
         }
         ).then((order) => {
             console.log('SAVED ORDER',order);
             params.onSuccess(order.Ordernum);
         }).catch((err)=> {
             console.error('------------- ERROR saving order -------------',err.name);
+            params.onError();
+        });
+    }    
+
+    // ===== addLine =====
+    // Ordernum (string): order number
+    // onSuccess (method): success callback method
+    // onError (method): error callback method
+    public addLine (params) {
+        console.log('net addLine',params.CustNum);
+        this.OrdersDS.save({
+            Ordernum: Number(params.Ordernum)
+        }
+        ).then((line) => {
+            console.log('SAVED ORDER LINE',line);
+            params.onSuccess(line.Ordernum);
+        }).catch((err)=> {
+            console.error('------------- ERROR saving order line -------------',err.name);
             params.onError();
         });
     }    
