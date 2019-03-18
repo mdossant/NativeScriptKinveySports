@@ -123,12 +123,6 @@ sdk.service((err, flex) => {
         console.log('service object', context.serviceObjectName);
         console.log('table', tables[context.serviceObjectName]);
 
-        if (!context.body.CustNum) {
-            console.log('Invalid data for insert.');
-            complete('Invalid data for insert.').runtimeError().next();
-            return;
-        }
-
         progressCore.progress.data.getSession({
             name: 'sportsflex',
             serviceURI: serviceURI,
@@ -144,9 +138,7 @@ sdk.service((err, flex) => {
                 jsdo: jsdo,
                 tableRef: tables[context.serviceObjectName]
             });
-            ds.create({
-                CustNum: context.body.CustNum
-            });
+            ds.create(context.body);
             return ds.saveChanges().toPromise();
         }).then((response) => {
                 console.log('record created',response.dsOrder.ttOrder[0].Ordernum);
