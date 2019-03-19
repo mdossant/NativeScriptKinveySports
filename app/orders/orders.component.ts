@@ -74,15 +74,15 @@ export class OrdersComponent implements OnInit {
             const year = date.getFullYear();
             dsOrder[i].formattedDate = this.months[month] + ' ' + day + ', ' + year;
         }
-        this.title = this.Name;
+        this.title = 'Customer\'s Orders';
         this.app.loading = false;
     }
 
-    private showOrderLines (e) {
-        console.log('orders showOrderLines',e.index);
+    private showOrderDetail (e) {
+        console.log('orders showOrderDetail',e.index);
         if (this.addingOrder)
             return;
-        this.router.navigate(['/orderlines',this.RepName,this.CustNum,this.Name,this.dsOrder[e.index].Ordernum],{clearHistory:true,transition:{name:'fade'}});
+        this.router.navigate(['/orderdetail',this.RepName,this.CustNum,this.Name,this.dsOrder[e.index].Ordernum],{clearHistory:true,transition:{name:'fade'}});
     }
 
     private showCustomers () {

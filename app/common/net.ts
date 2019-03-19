@@ -211,6 +211,23 @@ export class net {
         );
     }
 
+    // ===== getOrderDetail =====
+    // Ordernum (string): order number
+    // onSuccess (method): success callback method
+    // onError (method): error callback method
+    public getOrderDetail (params) {
+        console.log('net getOrderDetail',params.Ordernum);
+        Kinvey.CustomEndpoint.execute('GetOrderDetail',{Ordernum: params.Ordernum})
+        .then(function(response) {
+                console.log('------------ dsOrderDetail -----------',(<any>response).dsOrderDetail);
+                params.onSuccess((<any>response).dsOrderDetail);
+            })
+        .catch(function(error) {
+                console.error('------------ ERROR fetching orders -------------',error.name);
+                params.onError();
+        });
+    }
+
     // ===== getItem =====
     // Itemnum (string): item number
     // onSuccess (method): success callback method

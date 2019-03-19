@@ -12,6 +12,7 @@ import { CustomersComponent } from "./customers/customers.component";
 import { CustomerComponent } from "./customer/customer.component";
 import { OrdersComponent } from "./orders/orders.component";
 import { OrderLinesComponent } from "./orderlines/orderlines.component";
+import { OrderDetailComponent } from "./orderdetail/orderdetail.component";
 import { ItemComponent } from "./item/item.component";
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
@@ -36,6 +37,7 @@ import { ItemComponent } from "./item/item.component";
         CustomerComponent,
         OrdersComponent,
         OrderLinesComponent,
+        OrderDetailComponent,
         ItemComponent
     ],
     providers: [

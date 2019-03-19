@@ -1,0 +1,70 @@
+<ActionBar>
+    <StackLayout orientation="horizontal"
+        ios:horizontalAlignment="center"
+        android:horizontalAlignment="left">
+        <Label [text]="title" class="title" (tap)="showOrders()"></Label>
+    </StackLayout>
+    <ActionItem ios.position="left" (tap)="showOrders()"><Label id="leftIcon" [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
+    <ActionItem ios.position="right" (tap)="addLine()"><Label id="rightIcon" [text]="plusIcon" class="actionBarRightIcon"></Label></ActionItem>
+    <NavigationButton visibility="collapsed"></NavigationButton>
+</ActionBar>
+
+<StackLayout [visibility]="(app.loading)?'visible':'collapse'">
+    <Image #img (loaded)="app.animateLoading(img)" src="~/assets/img/ball.png" class="ball"></Image>
+</StackLayout>
+
+<StackLayout [visibility]="(app.loading)?'collapse':'visible'" backgroundColor="black">
+
+    <!-- Customer tab -->
+    <StackLayout [visibility]="(selectedTab===0)?'visible':'collapse'" backgroundColor="black">
+        <ListView [items]="customerData" height="90%">
+            <ng-template let-customerData="item" let-odd="odd">
+            <GridLayout class="list-group-item listEven" columns="6*,6*">
+                <Label row="0" col="0" [text]="customerData.columnLabel" class="columnLabel"></Label>
+                <Label row="0" col="1" [text]="customerData.columnValue" class="columnValue"></Label>
+            </GridLayout>
+            </ng-template>
+        </ListView>
+    </StackLayout>
+
+    <!-- Order header tab -->
+    <StackLayout [visibility]="(selectedTab===1)?'visible':'collapse'" backgroundColor="black">
+        <ListView [items]="orderData" height="90%">
+            <ng-template let-orderData="item" let-odd="odd">
+            <GridLayout class="list-group-item listEven" columns="6*,6*">
+                <Label row="0" col="0" [text]="orderData.columnLabel" class="columnLabel"></Label>
+                <Label row="0" col="1" [text]="orderData.columnValue" class="columnValue"></Label>
+            </GridLayout>
+            </ng-template>
+        </ListView>
+    </StackLayout>
+
+    <!-- Order lines tab -->
+    <StackLayout [visibility]="(selectedTab===2)?'visible':'collapse'" backgroundColor="black">
+        <StackLayout height="90%">
+            <GridLayout columns="3*,3*,3*,3*" height="50" class="listHeader">
+                <Label row="0" col="0" text="Line#"></Label>
+                <Label row="0" col="1" text="Item#"></Label>
+                <Label row="0" col="2" text="Qty"></Label>
+                <Label row="0" col="3" text="Price"></Label>
+            </GridLayout>
+            <ListView [items]="ttOrderLine" (itemTap)="showItem($event)" height="100%">
+                <ng-template let-ttOrderLine="item" let-odd="odd">
+                <GridLayout class="list-group-item listEven" columns="3*,3*,3*,3*" [ngClass]="{'listOdd':odd}">
+                    <Label row="0" col="0" [text]="ttOrderLine.Linenum"></Label>
+                    <Label row="0" col="1" [text]="ttOrderLine.Itemnum"></Label>
+                    <Label row="0" col="2" [text]="ttOrderLine.Qty"></Label>
+                    <Label row="0" col="3" [text]="'$'+ttOrderLine.Price"></Label>
+                </GridLayout>
+                </ng-template>
+            </ListView>
+        </StackLayout>
+    </StackLayout>
+
+    <!-- tabs -->
+    <GridLayout columns="1*,1*,1*" height="10%" top="90%">
+        <Label col="0" text="Customer"   class="icon" (tap)="selectTab(0)" [ngClass]="{'tab':selectedTab!==0,'tabSelected':selectedTab===0}"></Label>
+        <Label col="1" text="Order"  class="icon" (tap)="selectTab(1)" [ngClass]="{'tab':selectedTab!==1,'tabSelected':selectedTab===1}"></Label>
+        <Label col="2" text="Lines"   class="icon" (tap)="selectTab(2)" [ngClass]="{'tab':selectedTab!==2,'tabSelected':selectedTab===2}"></Label>
+    </GridLayout>
+</StackLayout>

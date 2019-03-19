@@ -14,12 +14,13 @@
 </StackLayout>
 
 <StackLayout [visibility]="(app.loading)?'collapse':'visible'">
+    <Label [text]="Name" class="customerName"></Label>
     <GridLayout columns="3*,4*,3*" height="50" class="listHeader">
         <Label row="0" col="0" text="Order#"></Label>
         <Label row="0" col="1" text="Date"></Label>
         <Label row="0" col="2" text="Status"></Label>
     </GridLayout>
-    <ListView [items]="dsOrder" (itemTap)="showOrderLines($event)" height="100%">
+    <ListView [items]="dsOrder" (itemTap)="showOrderDetail($event)" height="100%">
         <ng-template let-dsOrder="item" let-odd="odd">
         <GridLayout class="list-group-item listEven" columns="3*,4*,3*" [ngClass]="{'listOdd':odd}">
             <Label row="0" col="0" [text]="dsOrder.Ordernum"></Label>
