@@ -74,7 +74,7 @@ export class ItemComponent implements OnInit {
                     title: 'Could Not Download Item',
                     message: 'Ensure your have a strong network signal and try again.',
                     okButtonText: 'OK'
-                }).then(()=>this.showOrderLines());
+                }).then(()=>this.showOrderDetail());
             }
         });
     }
@@ -123,12 +123,12 @@ export class ItemComponent implements OnInit {
         });
     }
 
-    private showOrderLines () {
-        console.log('item showOrderLines');
+    private showOrderDetail () {
+        console.log('item showOrderDetail');
         this.app.animateIcon({
             target: this.leftIcon,
             onSuccess: () => {
-                this.router.navigate(['/orderlines',this.RepName,this.CustNum,this.Name,this.Ordernum],{clearHistory:true,transition:{name:'fade'}});
+                this.router.navigate(['/orderdetail',this.RepName,this.CustNum,this.Name,this.Ordernum],{clearHistory:true,transition:{name:'fade'}});
             }
         });
     }

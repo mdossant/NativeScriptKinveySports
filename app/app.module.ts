@@ -11,7 +11,6 @@ import { SigninComponent } from "./signin/signin.component";
 import { CustomersComponent } from "./customers/customers.component";
 import { CustomerComponent } from "./customer/customer.component";
 import { OrdersComponent } from "./orders/orders.component";
-import { OrderLinesComponent } from "./orderlines/orderlines.component";
 import { OrderDetailComponent } from "./orderdetail/orderdetail.component";
 import { ItemComponent } from "./item/item.component";
 
@@ -36,7 +35,6 @@ import { ItemComponent } from "./item/item.component";
         CustomersComponent,
         CustomerComponent,
         OrdersComponent,
-        OrderLinesComponent,
         OrderDetailComponent,
         ItemComponent
     ],

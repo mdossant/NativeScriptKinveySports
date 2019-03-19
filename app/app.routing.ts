@@ -12,7 +12,6 @@ import { SigninComponent } from "./signin/signin.component";
 import { CustomersComponent } from "./customers/customers.component";
 import { CustomerComponent } from "./customer/customer.component";
 import { OrdersComponent } from "./orders/orders.component";
-import { OrderLinesComponent } from "./orderlines/orderlines.component";
 import { OrderDetailComponent } from "./orderdetail/orderdetail.component";
 import { ItemComponent } from "./item/item.component";
 
@@ -22,7 +21,6 @@ const routes: Routes = [
     { path: "customers/:RepName", component: CustomersComponent },
     { path: "customer/:RepName/:_id", component: CustomerComponent },
     { path: "orders/:RepName/:CustNum/:Name", component: OrdersComponent },
-    { path: "orderlines/:RepName/:CustNum/:Name/:Ordernum", component: OrderLinesComponent },
     { path: "orderdetail/:RepName/:CustNum/:Name/:Ordernum", component: OrderDetailComponent },
     { path: "item/:RepName/:CustNum/:Name/:Ordernum/:Itemnum", component: ItemComponent }
 ];

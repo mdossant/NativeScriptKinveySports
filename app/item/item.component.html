@@ -2,9 +2,9 @@
     <StackLayout orientation="horizontal"
         ios:horizontalAlignment="center"
         android:horizontalAlignment="left">
-        <Label [text]="title" class="title" (tap)="showOrderLines()"></Label>
+        <Label [text]="title" class="title" (tap)="showOrderDetail()"></Label>
     </StackLayout>
-    <ActionItem ios.position="left" (tap)="showOrderLines()"><Label id="leftIcon" [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
+    <ActionItem ios.position="left" (tap)="showOrderDetail()"><Label id="leftIcon" [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
     <ActionItem ios.position="right" (tap)="takePicture()"><Label id="rightIcon" [text]="cameraIcon" class="actionBarRightIcon"></Label></ActionItem>
     <NavigationButton visibility="collapsed"></NavigationButton>
 </ActionBar>
@@ -14,7 +14,7 @@
 </StackLayout>
 
 <StackLayout [visibility]="(app.loading)?'collapse':'visible'">
-    <ListView [items]="itemData" (itemTap)="showOrders($event)" height="60%">
+    <ListView [items]="itemData" height="60%">
             <ng-template let-itemData="item" let-odd="odd">
             <GridLayout class="list-group-item listEven" columns="6*,6*">
                 <Label row="0" col="0" [text]="itemData.columnLabel" class="columnLabel"></Label>
