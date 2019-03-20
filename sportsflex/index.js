@@ -12,7 +12,7 @@ const catalogURI = 'http://ec2-3-80-82-104.compute-1.amazonaws.com:8080/static/S
 const username = 'm';
 const password = 'm';
 
-sdk.service((err, flex) => {
+sdk.service ((err, flex) => {
     const tables = {
         'SalesReps': 'ttSalesRep',
         'Customers': 'ttCustomer',
@@ -49,23 +49,30 @@ sdk.service((err, flex) => {
         }
     }
 
-    function getByQuery(context, complete, modules) {
-        console.log('getByQuery query',JSON.stringify(context.query));
-        console.log('service object', context.serviceObjectName);
-        console.log('table', tables[context.serviceObjectName]);
-
+    function mapQueryToJFP (query) {
+        console.log('mapQueryToJFP',query);
         // set JFP params for OpenEdge based on Kinvey's mongoDB query params
         // see https://docs.mongodb.com/manual/tutorial/query-documents/
         // ablFilter: filter or where clause without WHERE keyword
         let ablFilter = '';
-        if (context.query && context.query.query) {
-            let q = JSON.parse(context.query.query);
+        if (query && query.query) {
+            let q = JSON.parse(query.query);
             for (k in q) {
                 if (ablFilter) ablFilter = ablFilter + ' AND ';
                 ablFilter = ablFilter + k + '="' + q[k] + '"';
                 // need to implement other comparison operators
             }
         }
+        return ablFilter;
+    }
+
+    function getByQuery (context, complete, modules) {
+        console.log('getByQuery query',JSON.stringify(context.query));
+        console.log('service object', context.serviceObjectName);
+        console.log('table', tables[context.serviceObjectName]);
+
+        // ablFilter: query filter params
+        let ablFilter = mapQueryToJFP(context.query);
 
         // skip: number of records to skip
         const skip = (context.query) ? Number(context.query.skip) || 0 : 0;
@@ -119,7 +126,7 @@ sdk.service((err, flex) => {
         });
     }
 
-    function insert(context, complete, modules) {
+    function insert (context, complete, modules) {
         console.log('insert context',JSON.stringify(context));
         console.log('insert body',JSON.stringify(context.body));
         console.log('service object', context.serviceObjectName);
@@ -152,7 +159,7 @@ sdk.service((err, flex) => {
         });
     }
 
-    function update(context, complete, modules) {
+    function update (context, complete, modules) {
         console.log('update context',JSON.stringify(context));
         console.log('update query',JSON.stringify(context.query));
         console.log('service object', context.serviceObjectName);
@@ -161,16 +168,50 @@ sdk.service((err, flex) => {
         complete().setBody(JSON.stringify('RECORD PSEUDO UPDATED')).ok().next();
     }
 
-    function deleteByQuery(context, complete, modules) {
+    function deleteByQuery (context, complete, modules) {
         console.log('deleteByQuery context',JSON.stringify(context));
         console.log('deleteByQuery query',JSON.stringify(context.query));
         console.log('service object', context.serviceObjectName);
         console.log('table', tables[context.serviceObjectName]);
-        console.log('record deleted');
-        complete().setBody(JSON.stringify('RECORD PSEUDO DELETED')).ok().next();
+
+        // ablFilter: query filter params
+        let ablFilter = mapQueryToJFP(context.query);
+        
+        progressCore.progress.data.getSession({
+            name: 'sportsflex',
+            serviceURI: serviceURI,
+            catalogURI: catalogURI,
+            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
+            //username: username,
+            //password: password,
+        }).then(() => {
+            jsdo = new progressCore.progress.data.JSDO({
+                name: context.serviceObjectName
+            });
+            ds = new ngDataSource.DataSource({
+                jsdo: jsdo,
+                tableRef: tables[context.serviceObjectName]
+            });
+            return ds.read(
+                filter=JSON.stringify({ablFilter: ablFilter})
+            ).toPromise();
+        }).then((response) => {
+            console.log('number of records retrieved',response.data.length);
+            if (response.data.length === 0)
+                throw({message:'no records found to delete'});
+            this.ds.remove({_id: response.data[0]._id});
+            return this.ds.saveChanges().toPromise();
+        }).then(() => {
+            console.log('record deleted');
+            complete().setBody('RECORD DELETED').ok().next();
+        }).catch((err) => {
+            console.log('err.message',err.message);
+            console.log('err.stack',err.stack);
+            complete(err).runtimeError().next();
+        });
     }
 
-    function getById(context, complete, modules) {
+    function getById (context, complete, modules) {
         console.log('getById context',JSON.stringify(context));
         console.log('service object', context.serviceObjectName);
         console.log('table', tables[context.serviceObjectName]);
@@ -178,7 +219,7 @@ sdk.service((err, flex) => {
         complete().setBody('ENTITY TO BE RETURNED').ok().next();
     }
 
-    function GetOrderDetail(context, complete, modules) {
+    function GetOrderDetail (context, complete, modules) {
         console.log('GetOrderDetail context',JSON.stringify(context));
         console.log('GetOrderDetail body',JSON.stringify(context.body));
 

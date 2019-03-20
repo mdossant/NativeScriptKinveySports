@@ -15,7 +15,7 @@ export class app {
     public props = {
         appKey: 'kid_B1fDHsXzN',
         appSecret: 'ece2258ff70f4cc8934f5dad8913d880',
-        limit: 32,
+        limit: 25,
         version: '0-0-0',
         date: 'March 14, 2019'
     }

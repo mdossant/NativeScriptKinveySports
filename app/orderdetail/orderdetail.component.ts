@@ -53,13 +53,24 @@ export class OrderDetailComponent implements OnInit {
         console.log('orderdetail getOrderDetail',this.Ordernum);
         this.net.getOrderDetail({
             Ordernum: this.Ordernum,
-            onSuccess: (dsOrderDetail) => this.showOrderDetail(dsOrderDetail)
+            onSuccess: (dsOrderDetail) => this.showOrderDetail(dsOrderDetail),
+            onError: () => {
+                this.app.loading = false;
+                dialog.confirm({
+                    title: 'Could Not Download Order Detail',
+                    message: 'Ensure your have a strong network signal and try again.',
+                    okButtonText: 'OK'
+                }).then(()=>this.showOrders());
+            }
         })
     }
 
     private showOrderDetail (dsOrderDetail) {
-        console.log('orderdetail showOrderDetail lines#',dsOrderDetail.ttOrderLine.length);
-        this.ttOrderLine = dsOrderDetail.ttOrderLine;
+        console.log('orderdetail showOrderDetail',dsOrderDetail);
+        if (dsOrderDetail.ttOrderLine)
+            this.ttOrderLine = dsOrderDetail.ttOrderLine;
+        else
+            this.ttOrderLine = [];
         this.title = 'Order# ' + this.Ordernum;
         const ttCustomer = dsOrderDetail.ttCustomer[0];
         for (let k in ttCustomer) this.customerData.push({columnLabel: k, columnValue: ttCustomer[k]});
@@ -89,6 +100,22 @@ export class OrderDetailComponent implements OnInit {
             target: this.rightIcon,
             onSuccess: () => {
                 console.log('will add line -- TBD');
+            }
+        });
+    }
+
+    private removeOrder () {
+        console.log('orderdetail removeOrder');
+        this.net.removeOrder({
+            Ordernum: this.Ordernum,
+            onSuccess: () => this.showOrders(),
+            onError: () => {
+                this.app.loading = false;
+                dialog.confirm({
+                    title: 'Could Not Remove Order',
+                    message: 'Ensure your have a strong network signal and try again.',
+                    okButtonText: 'OK'
+                });
             }
         });
     }

@@ -219,11 +219,11 @@ export class net {
         console.log('net getOrderDetail',params.Ordernum);
         Kinvey.CustomEndpoint.execute('GetOrderDetail',{Ordernum: params.Ordernum})
         .then(function(response) {
-                console.log('------------ dsOrderDetail -----------',(<any>response).dsOrderDetail);
-                params.onSuccess((<any>response).dsOrderDetail);
-            })
+            console.log('------------ dsOrderDetail -----------',(<any>response).dsOrderDetail);
+            params.onSuccess((<any>response).dsOrderDetail);
+        })
         .catch(function(error) {
-                console.error('------------ ERROR fetching orders -------------',error.name);
+                console.error('------------ ERROR fetching order detail -------------',error.name);
                 params.onError();
         });
     }
@@ -327,6 +327,25 @@ export class net {
             params.onSuccess(order.Ordernum);
         }).catch((err)=> {
             console.error('------------- ERROR saving order -------------',err.name);
+            params.onError();
+        });
+    }    
+
+    // ===== removeOrder =====
+    // Ordernum (string): order number
+    // onSuccess (method): success callback method
+    // onError (method): error callback method
+    public removeOrder (params) {
+        console.log('net removeOrder',params.Ordernum);
+        const query = new Kinvey.Query;
+        query.equalTo('Ordernum',Number(params.Ordernum));
+        this.OrdersDS.remove(query)
+        .then((result) => {
+            console.log('DELETED ORDER',result);
+            this.OrdersDS.clearSync();
+            params.onSuccess();
+        }).catch((err)=> {
+            console.error('------------- ERROR removing order -------------',err.name);
             params.onError();
         });
     }    

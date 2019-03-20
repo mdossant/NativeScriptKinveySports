@@ -1,6 +1,6 @@
 {
   "name": "sportsflex",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "A kinvey flex jsdo connector for sports app",
   "main": "index.js",
   "scripts": {
