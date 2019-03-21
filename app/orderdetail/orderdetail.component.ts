@@ -104,6 +104,13 @@ export class OrderDetailComponent implements OnInit {
         });
     }
 
+    private confirmRemoveOrder () {
+        console.log('orderdetail confirmRemoveOrder');
+        dialog.confirm('Are you sure you want to remove this order and all of its order lines?')
+        .then((reply)=>{
+            if (reply) this.removeOrder();
+        })
+    }
     private removeOrder () {
         console.log('orderdetail removeOrder');
         this.net.removeOrder({

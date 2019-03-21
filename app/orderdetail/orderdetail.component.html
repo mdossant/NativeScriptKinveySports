@@ -41,7 +41,7 @@
     <!-- Order header tab -->
     <StackLayout [visibility]="(selectedTab===1)?'visible':'collapse'" backgroundColor="black">
         <StackLayout height="90%">
-            <Button text="Remove Order" class="appButton" (tap)="removeOrder()"></Button>
+            <Button text="Remove Order" class="appButton" (tap)="confirmRemoveOrder()"></Button>
             <ListView [items]="orderData">
                 <ng-template let-orderData="item" let-odd="odd">
                 <GridLayout class="list-group-item listEven" columns="6*,6*">
