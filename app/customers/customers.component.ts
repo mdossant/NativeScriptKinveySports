@@ -60,7 +60,7 @@ export class CustomersComponent implements OnInit {
 
     private showCustomers (dsCustomer) {
         console.log('customers showCustomers',dsCustomer.length);
-        this.title = this.RepName;
+        this.title = 'Welcome, ' + this.RepName;
         for (let i=0; i<dsCustomer.length; i++)
            this.dsCustomer.push(dsCustomer[i]);
         this.app.loading = false;

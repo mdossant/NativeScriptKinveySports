@@ -128,3 +128,13 @@ Button:disabled {
     border-width: 2px;
     border-color: white;
 }
+
+.customersListTitle {
+    text-align: center;
+    font-size: 20;
+    padding: 10;
+    background-color: rgb(196, 251, 255);
+    color: rgb(14, 14, 110);
+    border-width: 2px;
+    border-color: white;
+}
