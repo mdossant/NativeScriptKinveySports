@@ -9,6 +9,7 @@ import { net } from '../common/net';
 import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { ListView } from 'tns-core-modules/ui/list-view';
 import { Page, View } from 'tns-core-modules/ui/page';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 
@@ -30,9 +31,13 @@ export class OrderDetailComponent implements OnInit {
     private Ordernum: String;
     private Name: String;
     private ttOrderLine = {};
+    private ttOrderDetail = {};
+    private ttCustomer = {};
     private selectedTab: Number = 0;
     private customerData = [];
     private orderData = [];
+    private orderDataList: ListView;
+    private customerDataList: ListView;
 
     public constructor (private app: app, private net: net, private page: Page, private router: RouterExtensions, private screen: ActivatedRoute) {}
 
@@ -46,6 +51,8 @@ export class OrderDetailComponent implements OnInit {
         this.Ordernum = this.screen.snapshot.params['Ordernum'];
         this.leftIcon = <View>this.page.getViewById('leftIcon');
         this.rightIcon = <View>this.page.getViewById('rightIcon');
+        this.orderDataList = <ListView>this.page.getViewById('orderDataList');
+        this.customerDataList = <ListView>this.page.getViewById('customerDataList');
         setTimeout(() => this.getOrderDetail(),50);
     }
 
@@ -72,10 +79,15 @@ export class OrderDetailComponent implements OnInit {
         else
             this.ttOrderLine = [];
         this.title = 'Order# ' + this.Ordernum;
-        const ttCustomer = dsOrderDetail.ttCustomer[0];
-        for (let k in ttCustomer) this.customerData.push({columnLabel: k, columnValue: ttCustomer[k]});
-        const ttOrderDetail = dsOrderDetail.ttOrderDetail[0];
-        for (let k in ttOrderDetail) this.orderData.push({columnLabel: k, columnValue: ttOrderDetail[k]});
+        this.ttOrderDetail = dsOrderDetail.ttOrderDetail[0];
+        this.ttCustomer = dsOrderDetail.ttCustomer[0];
+        for (let k in this.ttOrderDetail) this.orderData.push({columnLabel: k, columnValue: this.ttOrderDetail[k]});
+        for (let k in this.ttCustomer) this.customerData.push({columnLabel: k, columnValue: this.ttCustomer[k]});
+        // trick: add some keyboard buffer area
+        for (let i=0; i<6; i++) {
+            this.orderData.push({});
+            this.customerData.push({});
+        }
         this.app.loading = false;
     }
 
@@ -92,6 +104,48 @@ export class OrderDetailComponent implements OnInit {
                 this.router.navigate(['/orders',this.RepName,this.CustNum,this.Name],{clearHistory:true,transition:{name:'fade'}});
             }
         });
+    }
+
+    private editOrder (e) {
+        console.log('orderdetail editOrder',e.index);
+        console.log(this.orderData[e.index]);
+        console.log(this.ttOrderDetail[this.orderData[e.index].columnLabel]);
+        this.orderDataList.scrollToIndexAnimated(e.index);
+    }
+
+    private updateOrder (index,newValue) {
+        console.log('orderdetail updateOrder',index,newValue);
+        console.log(this.orderData[index]);
+        console.log(this.ttOrderDetail[this.orderData[index].columnLabel]);
+        if (this.ttOrderDetail[this.orderData[index].columnLabel] !== newValue) {
+            this.ttOrderDetail[this.orderData[index].columnLabel] = newValue;
+            this.net.updateOrder({
+                _id: 12345,
+                ttOrder: this.ttOrderDetail,
+                onSuccess: () => {},
+                onError: () => {
+                    this.app.loading = false;
+                    dialog.confirm({
+                        title: 'Could Not Update Order',
+                        message: 'Ensure your have a strong network signal and try again.',
+                        okButtonText: 'OK'
+                    });
+                }
+            });
+        }
+    }
+
+    private editCustomer (e) {
+        console.log('orderdetail editCustomer',e.index);
+        console.log(this.customerData[e.index]);
+        console.log(this.ttCustomer[this.customerData[e.index].columnLabel]);
+        this.customerDataList.scrollToIndexAnimated(e.index);
+    }
+
+    private updateCustomer (index,newValue) {
+        console.log('orderdetail updateCustomer',index,newValue);
+        console.log(this.customerData[index]);
+        console.log(this.ttCustomer[this.customerData[index].columnLabel]);
     }
 
     private addLine () {

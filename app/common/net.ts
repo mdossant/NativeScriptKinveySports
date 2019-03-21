@@ -331,6 +331,28 @@ export class net {
         });
     }    
 
+    // ===== updateOrder =====
+    // _id (string): entity id
+    // ttOrder (array): order data
+    // onSuccess (method): success callback method
+    // onError (method): error callback method
+    public updateOrder (params) {
+        console.log('net updateOrder',params._id,params.ttOrder);
+        params.onError();
+        /*
+        this.OrdersDS.save({
+            CustNum: Number(params.CustNum)
+        }
+        ).then((order) => {
+            console.log('SAVED ORDER',order);
+            params.onSuccess(order.Ordernum);
+        }).catch((err)=> {
+            console.error('------------- ERROR saving order -------------',err.name);
+            params.onError();
+        });
+        */
+    }    
+
     // ===== removeOrder =====
     // Ordernum (string): order number
     // onSuccess (method): success callback method

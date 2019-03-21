@@ -42,11 +42,11 @@
     <StackLayout [visibility]="(selectedTab===1)?'visible':'collapse'" backgroundColor="black">
         <StackLayout height="90%">
             <Button text="Remove Order" class="appButton" (tap)="confirmRemoveOrder()"></Button>
-            <ListView [items]="orderData">
-                <ng-template let-orderData="item" let-odd="odd">
+            <ListView id="orderDataList" [items]="orderData">
+                <ng-template let-orderData="item" let-odd="odd" let-index="index">
                 <GridLayout class="list-group-item listEven" columns="6*,6*">
                     <Label row="0" col="0" [text]="orderData.columnLabel" class="columnLabel"></Label>
-                    <Label row="0" col="1" [text]="orderData.columnValue" class="columnValue"></Label>
+                    <TextField row="0" col="1" #input [text]="orderData.columnValue" class="columnValue" (focus)="editOrder({index:index})" (blur)="updateOrder(index,input.text)"></TextField>
                 </GridLayout>
                 </ng-template>
             </ListView>
@@ -55,11 +55,11 @@
     
     <!-- Customer tab -->
     <StackLayout [visibility]="(selectedTab===2)?'visible':'collapse'" backgroundColor="black">
-        <ListView [items]="customerData" height="90%">
-            <ng-template let-customerData="item" let-odd="odd">
+        <ListView id="customerDataList" [items]="customerData" height="90%">
+            <ng-template let-customerData="item" let-odd="odd" let-index="index">
             <GridLayout class="list-group-item listEven" columns="6*,6*">
                 <Label row="0" col="0" [text]="customerData.columnLabel" class="columnLabel"></Label>
-                <Label row="0" col="1" [text]="customerData.columnValue" class="columnValue"></Label>
+                <TextField row="0" col="1" #input [text]="customerData.columnValue" class="columnValue" (focus)="editCustomer({index:index})" (blur)="updateCustomer(index,input.text)"></TextField>
             </GridLayout>
             </ng-template>
         </ListView>
