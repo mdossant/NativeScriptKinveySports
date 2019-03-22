@@ -74,6 +74,22 @@ export class OrderDetailComponent implements OnInit {
         })
     }
 
+    private setListData () {
+        this.orderData = [];
+        this.customerData = [];
+        for (let k in this.ttOrderDetail) 
+            if (k.indexOf('Ordernum') === -1 && k.indexOf('CustNum') === -1 && k.indexOf('_id') === -1)
+                this.orderData.push({columnLabel: k, columnValue: this.ttOrderDetail[k]});
+        for (let k in this.ttCustomer)
+            if (k.indexOf('CustNum') === -1 && k.indexOf('SalesRep') === -1 && k.indexOf('_id') === -1)
+                this.customerData.push({columnLabel: k, columnValue: this.ttCustomer[k]});
+        // trick: add some keyboard buffer area
+        for (let i=0; i<6; i++) {
+            this.orderData.push({});
+            this.customerData.push({});
+        }
+    }
+
     private showOrderDetail (dsOrderDetail) {
         console.log('orderdetail showOrderDetail',dsOrderDetail);
         if (dsOrderDetail.ttOrderLine)
@@ -85,17 +101,7 @@ export class OrderDetailComponent implements OnInit {
         this.ttOrderDetail['_id'] = this._id;
         this.ttCustomer = dsOrderDetail.ttCustomer[0];
         this.ttCustomer['_id'] = this._id;
-        for (let k in this.ttOrderDetail) 
-            if (k.indexOf('Ordernum') === -1 && k.indexOf('CustNum') === -1 && k.indexOf('_id') === -1)
-                this.orderData.push({columnLabel: k, columnValue: this.ttOrderDetail[k]});
-        for (let k in this.ttCustomer)
-            if (k.indexOf('CustNum') === -1 && k.indexOf('SalesRep') === -1)
-                this.customerData.push({columnLabel: k, columnValue: this.ttCustomer[k]});
-        // trick: add some keyboard buffer area
-        for (let i=0; i<6; i++) {
-            this.orderData.push({});
-            this.customerData.push({});
-        }
+        this.setListData();
         this.app.loading = false;
     }
 
@@ -127,6 +133,7 @@ export class OrderDetailComponent implements OnInit {
         console.log(this.ttOrderDetail[this.orderData[index].columnLabel]);
         if (this.ttOrderDetail[this.orderData[index].columnLabel] !== newValue) {
             this.ttOrderDetail[this.orderData[index].columnLabel] = newValue;
+            this.setListData();
             this.net.updateOrder({
                 ttOrder: this.ttOrderDetail,
                 onSuccess: () => {console.log('orderdetail updateOrder SUCCESS')},
@@ -158,6 +165,7 @@ export class OrderDetailComponent implements OnInit {
         console.log(this.ttCustomer[this.customerData[index].columnLabel]);
         if (this.ttCustomer[this.customerData[index].columnLabel] !== newValue) {
             this.ttCustomer[this.customerData[index].columnLabel] = newValue;
+            this.setListData();
             this.net.updateCustomer({
                 ttCustomer: this.ttCustomer,
                 onSuccess: () => {console.log('orderdetail updateCustomer SUCCESS')},
