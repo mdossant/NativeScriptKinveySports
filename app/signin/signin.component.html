@@ -12,4 +12,11 @@
     <TextField id="userName" hint="👤 Username" editable="{{fieldsEnabled}}" class="signinInput" (textChange)="newUsername($event)"></TextField>
     <TextField id="password" hint="🔑 Password" editable="{{fieldsEnabled}}" class="signinInput" (textChange)="newPassword($event)" secure="true"></TextField>
     <Button [text]="btnText" (tap)="signin()" isEnabled="{{btnEnabled}}" class="appButton"></Button>
+    <Label text="NativeScript Kinvey OpenEdge Sports Demo App" class="appTitle" textWrap="true"></Label>
+    <Label [text]="'Version ' + app.props.version" class="appInfo"></Label>
+    <Label [text]="app.props.date" class="appInfo"></Label>
+    <Button text="progress.com/company" class="appURL" (tap)="launchCompany()"></Button>
+    <Button text="progress.com/kinvey" class="appURL" (tap)="launchKinvey()"></Button>
+    <Button text="nativescript.org" class="appURL" (tap)="launchNativeScript()"></Button>
+    <Button text="progress.com/privacy" class="appURL" (tap)="launchPrivacy()"></Button>
 </StackLayout>

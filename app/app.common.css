@@ -32,6 +32,26 @@ Button:disabled {
     font-size: 20;
 }
 
+.appTitle {
+    font-size: 22;
+    color: cyan;
+    text-align: center;
+    margin: 10;
+}
+
+.appInfo {
+    font-size: 20;
+    color: gray;
+    text-align: center;
+}
+
+.appURL {
+    text-decoration: underline;
+    font-size: 20;
+    color: white;
+    text-align: center;
+}
+
 .orangeActionBar {
     background-color: orange;
 }

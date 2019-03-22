@@ -78,7 +78,7 @@ export class OrderDetailComponent implements OnInit {
         this.orderData = [];
         this.customerData = [];
         for (let k in this.ttOrderDetail) 
-            if (k.indexOf('Ordernum') === -1 && k.indexOf('CustNum') === -1 && k.indexOf('_id') === -1)
+            if (k.indexOf('Ordernum') === -1 && k.indexOf('CustNum') === -1 && k.indexOf('SalesRep') === -1 && k.indexOf('_id') === -1)
                 this.orderData.push({columnLabel: k, columnValue: this.ttOrderDetail[k]});
         for (let k in this.ttCustomer)
             if (k.indexOf('CustNum') === -1 && k.indexOf('SalesRep') === -1 && k.indexOf('_id') === -1)

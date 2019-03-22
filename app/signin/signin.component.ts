@@ -10,6 +10,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Page } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field';
+import * as utils from 'tns-core-modules/utils/utils';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 //import * as application from 'tns-core-modules/application';
 
@@ -38,7 +39,7 @@ export class SigninComponent implements OnInit {
         this.password = <TextField> this.page.getViewById('password');
         this.userName.text = 'RDR';
         this.password.text = 'rdr';
-        setTimeout(()=>this.userName.focus(),100);
+//        setTimeout(()=>this.userName.focus(),100);
 //        this.router.navigate(['/customers'],{clearHistory:true,transition:{name:'fade'}});
 //        this.router.navigate(['/customer',1],{clearHistory:true,transition:{name:'fade'}});
 //        this.router.navigate(['/orders',1],{clearHistory:true,transition:{name:'fade'}});
@@ -51,6 +52,26 @@ export class SigninComponent implements OnInit {
         console.log('signin constructor');
         this.appVersion = 'version ' + this.app.props.version;
         this.appDate = 'as of ' + this.app.props.date;
+    }
+
+    private launchCompany () {
+        console.log('launchCompany');
+        utils.openUrl('https://www.progress.com/company');
+    }
+
+    private launchKinvey () {
+        console.log('launchKinvey');
+        utils.openUrl('https://www.progress.com/kinvey');
+    }
+
+    private launchNativeScript () {
+        console.log('launchNativeScript');
+        utils.openUrl('https://nativescript.org');
+    }
+
+    private launchPrivacy () {
+        console.log('launchPrivacy');
+        utils.openUrl('https://www.progress.com/legal/privacy-policy');
     }
 
     private enableSignin () {
