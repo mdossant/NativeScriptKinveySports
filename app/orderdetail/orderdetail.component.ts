@@ -84,6 +84,7 @@ export class OrderDetailComponent implements OnInit {
         this.ttOrderDetail = dsOrderDetail.ttOrderDetail[0];
         this.ttOrderDetail['_id'] = this._id;
         this.ttCustomer = dsOrderDetail.ttCustomer[0];
+        this.ttCustomer['_id'] = this._id;
         for (let k in this.ttOrderDetail) 
             if (k.indexOf('Ordernum') === -1 && k.indexOf('CustNum') === -1 && k.indexOf('_id') === -1)
                 this.orderData.push({columnLabel: k, columnValue: this.ttOrderDetail[k]});
@@ -155,6 +156,24 @@ export class OrderDetailComponent implements OnInit {
         console.log('orderdetail updateCustomer',index,newValue);
         console.log(this.customerData[index]);
         console.log(this.ttCustomer[this.customerData[index].columnLabel]);
+        if (this.ttCustomer[this.customerData[index].columnLabel] !== newValue) {
+            this.ttCustomer[this.customerData[index].columnLabel] = newValue;
+            this.net.updateCustomer({
+                ttCustomer: this.ttCustomer,
+                onSuccess: () => {console.log('orderdetail updateCustomer SUCCESS')},
+                onError: () => {
+                    console.log('orderdetail updateCustomer ERROR');
+                    /*
+                    this.app.loading = false;
+                    dialog.confirm({
+                        title: 'Could Not Update Order',
+                        message: 'Ensure your have a strong network signal and try again.',
+                        okButtonText: 'OK'
+                    });
+                    */
+                }
+            });
+        }
     }
 
     private addLine () {

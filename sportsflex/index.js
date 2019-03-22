@@ -31,7 +31,7 @@ sdk.service ((err, flex) => {
     }
 
     registerServiceObject('SalesReps','R');
-    registerServiceObject('Customers','R');
+    registerServiceObject('Customers','RU');
     registerServiceObject('Orders','CRUD');
     registerServiceObject('OrderLines','CRUD');
     registerServiceObject('Items','R');

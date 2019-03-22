@@ -367,6 +367,23 @@ export class net {
         });
     }    
 
+    // ===== updateCustomer =====
+    // ttCustomer (array): customer data
+    // onSuccess (method): success callback method
+    // onError (method): error callback method
+    public updateCustomer (params) {
+        console.log('net updateCustomer',params.ttCustomer);
+        this.CustomersDS.save(params.ttCustomer).then((result) => {
+            console.log('SAVED CUSTOMER - UPDATE',result);
+            this.CustomersDS.clearSync();
+            params.onSuccess();
+        }).catch((err)=> {
+            console.error('------------- ERROR saving customer (update) -------------',err.name);
+            this.CustomersDS.clearSync();
+            params.onError();
+        });
+    }    
+
     // ===== addLine =====
     // Ordernum (string): order number
     // onSuccess (method): success callback method
