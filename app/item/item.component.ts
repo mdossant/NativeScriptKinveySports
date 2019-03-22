@@ -28,6 +28,7 @@ export class ItemComponent implements OnInit {
     private cameraIcon: String = String.fromCharCode(0xe90f);
     private leftIcon: View;
     private rightIcon: View;
+    private _id: String;
     private RepName: String;
     private CustNum: String;
     private Ordernum: String;
@@ -43,6 +44,7 @@ export class ItemComponent implements OnInit {
         console.log('item ngOnInit');
         this.app.loading = true;
         this.title = 'Loading item...';
+        this._id = this.screen.snapshot.params['_id'];
         this.RepName = this.screen.snapshot.params['RepName'];
         this.CustNum = this.screen.snapshot.params['CustNum'];
         this.Name = this.screen.snapshot.params['Name'];
@@ -128,7 +130,7 @@ export class ItemComponent implements OnInit {
         this.app.animateIcon({
             target: this.leftIcon,
             onSuccess: () => {
-                this.router.navigate(['/orderdetail',this.RepName,this.CustNum,this.Name,this.Ordernum],{clearHistory:true,transition:{name:'fade'}});
+                this.router.navigate(['/orderdetail',this._id,this.RepName,this.CustNum,this.Name,this.Ordernum],{clearHistory:true,transition:{name:'fade'}});
             }
         });
     }

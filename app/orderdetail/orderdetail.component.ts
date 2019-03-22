@@ -26,6 +26,7 @@ export class OrderDetailComponent implements OnInit {
     private plusIcon: String = String.fromCharCode(0xea0a) + 'L';
     private leftIcon: View;
     private rightIcon: View;
+    private _id: String;
     private RepName: String;
     private CustNum: String;
     private Ordernum: String;
@@ -45,6 +46,7 @@ export class OrderDetailComponent implements OnInit {
         console.log('orderdetail ngOnInit');
         this.app.loading = true;
         this.title = 'Loading order detail...';
+        this._id = this.screen.snapshot.params['_id'];
         this.RepName = this.screen.snapshot.params['RepName'];
         this.CustNum = this.screen.snapshot.params['CustNum'];
         this.Name = this.screen.snapshot.params['Name'];
@@ -80,9 +82,14 @@ export class OrderDetailComponent implements OnInit {
             this.ttOrderLine = [];
         this.title = 'Order# ' + this.Ordernum;
         this.ttOrderDetail = dsOrderDetail.ttOrderDetail[0];
+        this.ttOrderDetail['_id'] = this._id;
         this.ttCustomer = dsOrderDetail.ttCustomer[0];
-        for (let k in this.ttOrderDetail) this.orderData.push({columnLabel: k, columnValue: this.ttOrderDetail[k]});
-        for (let k in this.ttCustomer) this.customerData.push({columnLabel: k, columnValue: this.ttCustomer[k]});
+        for (let k in this.ttOrderDetail) 
+            if (k.indexOf('Ordernum') === -1 && k.indexOf('CustNum') === -1 && k.indexOf('_id') === -1)
+                this.orderData.push({columnLabel: k, columnValue: this.ttOrderDetail[k]});
+        for (let k in this.ttCustomer)
+            if (k.indexOf('CustNum') === -1 && k.indexOf('SalesRep') === -1)
+                this.customerData.push({columnLabel: k, columnValue: this.ttCustomer[k]});
         // trick: add some keyboard buffer area
         for (let i=0; i<6; i++) {
             this.orderData.push({});
@@ -93,7 +100,7 @@ export class OrderDetailComponent implements OnInit {
 
     private showItem (e) {
         console.log('orderdetail showItem',e.index);
-        this.router.navigate(['/item',this.RepName,this.CustNum,this.Name,this.Ordernum,this.ttOrderLine[e.index].Itemnum],{clearHistory:true,transition:{name:'fade'}});
+        this.router.navigate(['/item',this._id,this.RepName,this.CustNum,this.Name,this.Ordernum,this.ttOrderLine[e.index].Itemnum],{clearHistory:true,transition:{name:'fade'}});
     }
 
     private showOrders () {
@@ -120,16 +127,18 @@ export class OrderDetailComponent implements OnInit {
         if (this.ttOrderDetail[this.orderData[index].columnLabel] !== newValue) {
             this.ttOrderDetail[this.orderData[index].columnLabel] = newValue;
             this.net.updateOrder({
-                _id: 12345,
                 ttOrder: this.ttOrderDetail,
-                onSuccess: () => {},
+                onSuccess: () => {console.log('orderdetail updateOrder SUCCESS')},
                 onError: () => {
+                    console.log('orderdetail updateOrder ERROR?');
+                    /*
                     this.app.loading = false;
                     dialog.confirm({
                         title: 'Could Not Update Order',
                         message: 'Ensure your have a strong network signal and try again.',
                         okButtonText: 'OK'
                     });
+                    */
                 }
             });
         }
@@ -183,6 +192,8 @@ export class OrderDetailComponent implements OnInit {
 
     private selectTab (tabNumber) {
         console.log('orderdetail selectTab',tabNumber);
+        if (tabNumber === 1) this.orderDataList.scrollToIndexAnimated(0);
+        if (tabNumber === 2) this.customerDataList.scrollToIndexAnimated(0);
         this.selectedTab = tabNumber;
     }
 }

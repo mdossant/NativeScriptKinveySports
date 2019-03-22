@@ -82,7 +82,7 @@ export class OrdersComponent implements OnInit {
         console.log('orders showOrderDetail',e.index);
         if (this.addingOrder)
             return;
-        this.router.navigate(['/orderdetail',this.RepName,this.CustNum,this.Name,this.dsOrder[e.index].Ordernum],{clearHistory:true,transition:{name:'fade'}});
+        this.router.navigate(['/orderdetail',this.dsOrder[e.index]._id,this.RepName,this.CustNum,this.Name,this.dsOrder[e.index].Ordernum],{clearHistory:true,transition:{name:'fade'}});
     }
 
     private showCustomers () {

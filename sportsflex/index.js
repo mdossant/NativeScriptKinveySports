@@ -13,6 +13,8 @@ const username = 'm';
 const password = 'm';
 
 sdk.service ((err, flex) => {
+
+    // JSDO needs to know temp-table
     const tables = {
         'SalesReps': 'ttSalesRep',
         'Customers': 'ttCustomer',
@@ -21,6 +23,12 @@ sdk.service ((err, flex) => {
         'Items': 'ttItem',
         'States': 'ttState'
     };
+
+    // for JSDO update, need to know key field
+    const keys = {
+        'Customers': 'CustNum',
+        'Orders': 'Ordernum'
+    }
 
     registerServiceObject('SalesReps','R');
     registerServiceObject('Customers','R');
@@ -161,11 +169,45 @@ sdk.service ((err, flex) => {
 
     function update (context, complete, modules) {
         console.log('update context',JSON.stringify(context));
-        console.log('update query',JSON.stringify(context.query));
         console.log('service object', context.serviceObjectName);
         console.log('table', tables[context.serviceObjectName]);
-        console.log('record updated');
-        complete().setBody(JSON.stringify('RECORD PSEUDO UPDATED')).ok().next();
+
+        // filter: query filter
+        let key = keys[context.serviceObjectName];
+        let filter = key + ' = ' + context.body[key];
+        
+        progressCore.progress.data.getSession({
+            name: 'sportsflex',
+            serviceURI: serviceURI,
+            catalogURI: catalogURI,
+            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
+            //username: username,
+            //password: password,
+        }).then(() => {
+            jsdo = new progressCore.progress.data.JSDO({
+                name: context.serviceObjectName
+            });
+            ds = new ngDataSource.DataSource({
+                jsdo: jsdo,
+                tableRef: tables[context.serviceObjectName]
+            });
+            return ds.read(filter=filter).toPromise();
+        }).then((response) => {
+            console.log('number of records retrieved',response.data.length);
+            if (response.data.length === 0)
+                throw({message:'no records found to update'});
+            let body = context.body;
+            body._id = response.data[0]._id;
+            this.ds.update(body);
+            return this.ds.saveChanges().toPromise();
+        }).then((result) => {
+            console.log('========== record updated',result);
+            complete().setBody('RECORD UPDATED').ok().next();
+        }).catch((err) => {
+            console.log('err.message',err.message);
+            console.log('err.stack',err.stack);
+            complete(err).runtimeError().next();
+        });        
     }
 
     function deleteByQuery (context, complete, modules) {

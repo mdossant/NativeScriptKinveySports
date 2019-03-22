@@ -323,34 +323,29 @@ export class net {
             CustNum: Number(params.CustNum)
         }
         ).then((order) => {
-            console.log('SAVED ORDER',order);
+            console.log('SAVED ORDER - INSERT',order);
             params.onSuccess(order.Ordernum);
         }).catch((err)=> {
-            console.error('------------- ERROR saving order -------------',err.name);
+            console.error('------------- ERROR saving order (insert) -------------',err.name);
             params.onError();
         });
     }    
 
     // ===== updateOrder =====
-    // _id (string): entity id
     // ttOrder (array): order data
     // onSuccess (method): success callback method
     // onError (method): error callback method
     public updateOrder (params) {
-        console.log('net updateOrder',params._id,params.ttOrder);
-        params.onError();
-        /*
-        this.OrdersDS.save({
-            CustNum: Number(params.CustNum)
-        }
-        ).then((order) => {
-            console.log('SAVED ORDER',order);
-            params.onSuccess(order.Ordernum);
+        console.log('net updateOrder',params.ttOrder);
+        this.OrdersDS.save(params.ttOrder).then((result) => {
+            console.log('SAVED ORDER - UPDATE',result);
+            this.OrdersDS.clearSync();
+            params.onSuccess();
         }).catch((err)=> {
-            console.error('------------- ERROR saving order -------------',err.name);
+            console.error('------------- ERROR saving order (update) -------------',err.name);
+            this.OrdersDS.clearSync();
             params.onError();
         });
-        */
     }    
 
     // ===== removeOrder =====
