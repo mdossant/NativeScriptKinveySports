@@ -324,7 +324,7 @@ export class net {
         }
         ).then((order) => {
             console.log('SAVED ORDER - INSERT',order);
-            params.onSuccess(order.Ordernum);
+            params.onSuccess(order._id,order.Ordernum);
         }).catch((err)=> {
             console.error('------------- ERROR saving order (insert) -------------',err.name);
             params.onError();

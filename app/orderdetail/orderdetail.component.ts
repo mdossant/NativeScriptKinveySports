@@ -102,6 +102,7 @@ export class OrderDetailComponent implements OnInit {
     }
 
     private setListData () {
+        console.log('orderdetail setListData');
         this.orderData = [];
         this.customerData = [];
         for (let k in this.ttOrderDetail)
@@ -158,7 +159,7 @@ export class OrderDetailComponent implements OnInit {
     }
 
     private editDate (index) {
-        console.log('ordedetail editDate',index);
+        console.log('orderdetail editDate',index);
         console.log(this.ttOrderDetail[this.orderData[index].columnName]);
         this.index = index;
         let columnDate;
@@ -174,12 +175,12 @@ export class OrderDetailComponent implements OnInit {
     }
 
     private cancelEditDate () {
-        console.log('ordedetail cancelEditDate');
+        console.log('orderdetail cancelEditDate');
         this.showingDatePicker = false;
     }
 
     private doneEditDate () {
-        console.log('ordedetail doneEditDate',this.datePicker.date);
+        console.log('orderdetail doneEditDate',this.datePicker.date);
         this.updateOrder(this.index,this.datePicker.date);
         this.showingDatePicker = false;
     }
