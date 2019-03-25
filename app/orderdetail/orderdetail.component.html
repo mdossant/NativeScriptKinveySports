@@ -16,8 +16,46 @@
 <StackLayout [visibility]="(app.loading)?'collapse':'visible'" backgroundColor="black">
     <Label [text]="Name" class="customerName"></Label>
 
+    <!-- Order header tab -->
+    <StackLayout [visibility]="(selectedTab===0 && !showingDatePicker)?'visible':'collapse'" backgroundColor="black">
+        <StackLayout height="90%">
+            <Button text="Remove Order" class="appButton" (tap)="confirmRemoveOrder()"></Button>
+            <ListView id="orderDataList" [items]="orderData">
+                <ng-template let-orderData="item" let-odd="odd" let-index="index">
+                <GridLayout class="list-group-item listEven" columns="6*,6*">
+                    <Label row="0" col="0" [text]="orderData.columnLabel" class="columnLabel"></Label>
+                    <TextField row="0" col="1" #input [text]="orderData.columnValue" class="columnValue" (focus)="editOrder(index)" (blur)="updateOrder(index,input.text)" [visibility]="(orderData.columnLabel && orderData.columnLabel.indexOf('Date')===-1)?'visible':'collapse'"></TextField>
+                    <Label row="0" col="1" [text]="orderData.columnValue" class="columnValue" (tap)="editDate(index)" [visibility]="(orderData.columnLabel && orderData.columnLabel.indexOf('Date')>-1)?'visible':'collapse'"></Label>
+                </GridLayout>
+                </ng-template>
+            </ListView>
+        </StackLayout>
+    </StackLayout>
+
+    <!-- Date Picker for order date fields -->
+    <StackLayout [visibility]="(selectedTab===0 && showingDatePicker)?'visible':'collapse'" backgroundColor="black">
+        <GridLayout columns="1*,3*,1*" height="10%">
+            <Button col="0" text="Cancel" class="editButton" (tap)="cancelEditDate()"></Button>
+            <Label col="1" [text]="editColumn" class="editColumn"></Label>
+            <Button col="2" text="Done" class="editButton" (tap)="doneEditDate()"></Button>
+        </GridLayout>
+        <DatePicker id="datePicker" height="80%"></DatePicker>
+    </StackLayout>
+    
+    <!-- Customer tab -->
+    <StackLayout [visibility]="(selectedTab===1)?'visible':'collapse'" backgroundColor="black">
+        <ListView id="customerDataList" [items]="customerData" height="90%">
+            <ng-template let-customerData="item" let-odd="odd" let-index="index">
+            <GridLayout class="list-group-item listEven" columns="6*,6*">
+                <Label row="0" col="0" [text]="customerData.columnLabel" class="columnLabel"></Label>
+                <TextField row="0" col="1" #input [text]="customerData.columnValue" class="columnValue" (focus)="editCustomer({index:index})" (blur)="updateCustomer(index,input.text)"></TextField>
+            </GridLayout>
+            </ng-template>
+        </ListView>
+    </StackLayout>
+    
     <!-- Order lines tab -->
-    <StackLayout [visibility]="(selectedTab===0)?'visible':'collapse'" backgroundColor="black">
+    <StackLayout [visibility]="(selectedTab===2)?'visible':'collapse'" backgroundColor="black">
         <StackLayout height="90%">
             <GridLayout columns="3*,3*,3*,3*" height="50" class="listHeader">
                 <Label row="0" col="0" text="Line#"></Label>
@@ -38,47 +76,10 @@
         </StackLayout>
     </StackLayout>
 
-    <!-- Order header tab -->
-    <StackLayout [visibility]="(selectedTab===1 && !showingDatePicker)?'visible':'collapse'" backgroundColor="black">
-        <StackLayout height="90%">
-            <Button text="Remove Order" class="appButton" (tap)="confirmRemoveOrder()"></Button>
-            <ListView id="orderDataList" [items]="orderData">
-                <ng-template let-orderData="item" let-odd="odd" let-index="index">
-                <GridLayout class="list-group-item listEven" columns="6*,6*">
-                    <Label row="0" col="0" [text]="orderData.columnLabel" class="columnLabel"></Label>
-                    <TextField row="0" col="1" #input [text]="orderData.columnValue" class="columnValue" (focus)="editOrder(index)" (blur)="updateOrder(index,input.text)" [visibility]="(orderData.columnLabel && orderData.columnLabel.indexOf('Date')===-1)?'visible':'collapse'"></TextField>
-                    <Label row="0" col="1" [text]="orderData.columnValue" class="columnValue" (tap)="editDate(index)" [visibility]="(orderData.columnLabel && orderData.columnLabel.indexOf('Date')>-1)?'visible':'collapse'"></Label>
-                </GridLayout>
-                </ng-template>
-            </ListView>
-        </StackLayout>
-    </StackLayout>
-
-    <StackLayout [visibility]="(selectedTab===1 && showingDatePicker)?'visible':'collapse'" backgroundColor="black">
-        <GridLayout columns="1*,3*,1*" height="10%">
-            <Button col="0" text="Cancel" class="editButton" (tap)="cancelEditDate()"></Button>
-            <Label col="1" [text]="editColumn" class="editColumn"></Label>
-            <Button col="2" text="Done" class="editButton" (tap)="doneEditDate()"></Button>
-        </GridLayout>
-        <DatePicker id="datePicker" height="80%"></DatePicker>
-    </StackLayout>
-    
-    <!-- Customer tab -->
-    <StackLayout [visibility]="(selectedTab===2)?'visible':'collapse'" backgroundColor="black">
-        <ListView id="customerDataList" [items]="customerData" height="90%">
-            <ng-template let-customerData="item" let-odd="odd" let-index="index">
-            <GridLayout class="list-group-item listEven" columns="6*,6*">
-                <Label row="0" col="0" [text]="customerData.columnLabel" class="columnLabel"></Label>
-                <TextField row="0" col="1" #input [text]="customerData.columnValue" class="columnValue" (focus)="editCustomer({index:index})" (blur)="updateCustomer(index,input.text)"></TextField>
-            </GridLayout>
-            </ng-template>
-        </ListView>
-    </StackLayout>
-    
     <!-- tabs -->
     <GridLayout columns="1*,1*,1*" height="10%" top="90%">
-        <Label col="0" text="Lines"    class="icon" (tap)="selectTab(0)" [ngClass]="{'tab':selectedTab!==0,'tabSelected':selectedTab===0}"></Label>
-        <Label col="1" text="Order"    class="icon" (tap)="selectTab(1)" [ngClass]="{'tab':selectedTab!==1,'tabSelected':selectedTab===1}"></Label>
-        <Label col="2" text="Customer" class="icon" (tap)="selectTab(2)" [ngClass]="{'tab':selectedTab!==2,'tabSelected':selectedTab===2}"></Label>
+        <Label col="0" text="Order"    class="icon" (tap)="selectTab(0)" [ngClass]="{'tab':selectedTab!==0,'tabSelected':selectedTab===0}"></Label>
+        <Label col="1" text="Customer" class="icon" (tap)="selectTab(1)" [ngClass]="{'tab':selectedTab!==1,'tabSelected':selectedTab===1}"></Label>
+        <Label col="2" text="Lines"    class="icon" (tap)="selectTab(2)" [ngClass]="{'tab':selectedTab!==2,'tabSelected':selectedTab===2}"></Label>
     </GridLayout>
 </StackLayout>

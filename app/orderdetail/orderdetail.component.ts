@@ -277,8 +277,8 @@ export class OrderDetailComponent implements OnInit {
 
     private selectTab (tabNumber) {
         console.log('orderdetail selectTab',tabNumber);
-        if (tabNumber === 1) this.orderDataList.scrollToIndexAnimated(0);
-        if (tabNumber === 2) this.customerDataList.scrollToIndexAnimated(0);
+        if (tabNumber === 0) this.orderDataList.scrollToIndexAnimated(0);
+        if (tabNumber === 1) this.customerDataList.scrollToIndexAnimated(0);
         this.selectedTab = tabNumber;
         this.showingDatePicker = false;
     }
