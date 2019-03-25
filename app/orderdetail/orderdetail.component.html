@@ -63,7 +63,7 @@
                 <Label row="0" col="2" text="Qty"></Label>
                 <Label row="0" col="3" text="Price"></Label>
             </GridLayout>
-            <ListView [items]="ttOrderLine" (itemTap)="showItem($event)" height="100%">
+            <ListView [items]="ttOrderLine" (itemTap)="showLine($event)" height="100%">
                 <ng-template let-ttOrderLine="item" let-odd="odd">
                 <GridLayout class="list-group-item listEven" columns="3*,3*,3*,3*" [ngClass]="{'listOdd':odd}">
                     <Label row="0" col="0" [text]="ttOrderLine.Linenum"></Label>

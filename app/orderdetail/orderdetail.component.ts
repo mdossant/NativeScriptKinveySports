@@ -1,6 +1,6 @@
 // app: Sports
 // class: orderdetail
-// purpose: download and show order detail
+// purpose: download and show/edit order detail
 // author: mauricio dos santos
 // date: january 16 2019
 
@@ -136,13 +136,13 @@ export class OrderDetailComponent implements OnInit {
         this.app.loading = false;
     }
 
-    private showItem (e) {
-        console.log('orderdetail showItem',e.index);
-        this.router.navigate(['/item',this._id,this.RepName,this.CustNum,this.Name,this.Ordernum,this.ttOrderLine[e.index].Itemnum],{clearHistory:true,transition:{name:'fade'}});
+    private showLine (e) {
+        console.log('orderdetail showLine',e.index);
+        this.router.navigate(['/orderline',this._id,this.RepName,this.CustNum,this.Name,this.Ordernum,this.ttOrderLine[e.index].Linenum],{clearHistory:true,transition:{name:'fade'}});
     }
 
     private showOrders () {
-        console.log('orderdetail showOrder');
+        console.log('orderdetail showOrders');
         this.app.animateIcon({
             target: this.leftIcon,
             onSuccess: () => {

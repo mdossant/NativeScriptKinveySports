@@ -13,6 +13,7 @@ import { CustomersComponent } from "./customers/customers.component";
 import { CustomerComponent } from "./customer/customer.component";
 import { OrdersComponent } from "./orders/orders.component";
 import { OrderDetailComponent } from "./orderdetail/orderdetail.component";
+import { OrderLineComponent } from "./orderline/orderline.component";
 import { ItemComponent } from "./item/item.component";
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
     { path: "customer/:RepName/:_id", component: CustomerComponent },
     { path: "orders/:RepName/:CustNum/:Name", component: OrdersComponent },
     { path: "orderdetail/:_id/:RepName/:CustNum/:Name/:Ordernum", component: OrderDetailComponent },
+    { path: "orderline/:_id/:RepName/:CustNum/:Name/:Ordernum/:Linenum", component: OrderLineComponent },
     { path: "item/:_id/:RepName/:CustNum/:Name/:Ordernum/:Itemnum", component: ItemComponent }
 ];
 

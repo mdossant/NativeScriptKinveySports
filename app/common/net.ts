@@ -228,6 +228,34 @@ export class net {
         });
     }
 
+    // ===== getOrderLine =====
+    // Ordernum (string): order number
+    // Linenum (string): line number
+    // onSuccess (method): success callback method
+    // onError (method): error callback method
+    public getOrderLine (params) {
+        console.log('net getOrderLine',params.Ordernum,params.Linenum);
+        let data = [];
+        const query = new Kinvey.Query;
+        query.equalTo('Ordernum',Number(params.Ordernum));
+        query.equalTo('Linenum',Number(params.Linenum));
+        this.OrderLinesDS.find(query).subscribe(
+            (line) => {
+                console.log('------------ RESULTS # -----------',line.length);
+                data = line;
+            },
+            (error: Kinvey.BaseError) => {
+                console.error('------------- ERROR fetching item --------------',error.name);
+                if (data.length > 0)
+                    params.onSuccess(data[0]);
+                else
+                    params.onError();
+                return;
+            },
+            () => params.onSuccess(data[0])
+        );
+    }
+
     // ===== getItem =====
     // Itemnum (string): item number
     // onSuccess (method): success callback method
@@ -401,4 +429,21 @@ export class net {
             params.onError();
         });
     }    
+
+    // ===== updateOrderLine =====
+    // ttOrderLine (array): order line data
+    // onSuccess (method): success callback method
+    // onError (method): error callback method
+    public updateOrderLine (params) {
+        console.log('net updateOrderLine',params.ttOrder);
+        this.OrderLinesDS.save(params.ttOrderLine).then((result) => {
+            console.log('SAVED ORDER LINE - UPDATE',result);
+            this.OrderLinesDS.clearSync();
+            params.onSuccess();
+        }).catch((err)=> {
+            console.error('------------- ERROR saving order line (update) -------------',err.name);
+            this.OrdersDS.clearSync();
+            params.onError();
+        });
+    }
 }

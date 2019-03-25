@@ -1,0 +1,26 @@
+<ActionBar>
+    <StackLayout orientation="horizontal"
+        ios:horizontalAlignment="center"
+        android:horizontalAlignment="left">
+        <Label [text]="title" class="title" (tap)="showOrderDetail()"></Label>
+    </StackLayout>
+    <ActionItem ios.position="left" (tap)="showOrderDetail()"><Label id="leftIcon" [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
+    <NavigationButton visibility="collapsed"></NavigationButton>
+</ActionBar>
+
+<StackLayout [visibility]="(app.loading)?'visible':'collapse'">
+    <Image #img (loaded)="app.animateLoading(img)" src="~/assets/img/ball.png" class="ball"></Image>
+</StackLayout>
+
+<StackLayout [visibility]="(app.loading)?'collapse':'visible'" backgroundColor="black">
+    <Label [text]="Name" class="customerName"></Label>
+    <Button text="Remove Line" class="appButton" (tap)="confirmRemoveLine()"></Button>
+    <ListView id="lineDataList" [items]="lineData" height="90%">
+        <ng-template let-lineData="item" let-odd="odd" let-index="index">
+        <GridLayout class="list-group-item listEven" columns="6*,6*">
+            <Label row="0" col="0" [text]="lineData.columnLabel" class="columnLabel"></Label>
+            <TextField row="0" col="1" #input [text]="lineData.columnValue" class="columnValue" (focus)="editLine(index)" (blur)="updateLine(index,input.text)"></TextField>
+        </GridLayout>
+        </ng-template>
+    </ListView>
+</StackLayout>
