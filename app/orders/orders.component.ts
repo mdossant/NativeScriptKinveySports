@@ -72,7 +72,7 @@ export class OrdersComponent implements OnInit {
             const month = date.getMonth();
             const day = date.getDate();
             const year = date.getFullYear();
-            dsOrder[i].formattedDate = this.months[month] + ' ' + day + ', ' + year;
+            dsOrder[i].OrderDate = this.months[month] + ' ' + day + ', ' + year;
         }
         this.title = 'Customer\'s Orders';
         this.app.loading = false;

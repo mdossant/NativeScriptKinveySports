@@ -24,6 +24,23 @@ Button:disabled {
     background-color: #999;
 }
 
+DatePicker {
+    color: white;
+}
+
+.editColumn {
+    color: white;
+    text-align: center;
+    font-size: 25;
+}
+
+.editButton {
+    font-size: 20;
+    color: gray;
+    text-align: center;
+    margin: 5;
+}
+
 .signinTitle {
     font-size: 25;
 }

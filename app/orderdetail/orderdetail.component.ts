@@ -39,6 +39,9 @@ export class OrderDetailComponent implements OnInit {
     private orderData = [];
     private orderDataList: ListView;
     private customerDataList: ListView;
+    private showingDatePicker: Boolean = false;
+    private editColumn: String;
+    private months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
     public constructor (private app: app, private net: net, private page: Page, private router: RouterExtensions, private screen: ActivatedRoute) {}
 
@@ -74,12 +77,24 @@ export class OrderDetailComponent implements OnInit {
         })
     }
 
+    private formatDate (value) {
+        console.log('orderDetail formatDate');
+        const date = new Date(value);
+        const month = date.getMonth();
+        const day = date.getDate();
+        const year = date.getFullYear();
+        return this.months[month] + ' ' + day + ', ' + year;
+    }
+
     private setListData () {
         this.orderData = [];
         this.customerData = [];
         for (let k in this.ttOrderDetail) 
             if (k.indexOf('Ordernum') === -1 && k.indexOf('CustNum') === -1 && k.indexOf('SalesRep') === -1 && k.indexOf('_id') === -1)
-                this.orderData.push({columnLabel: k, columnValue: this.ttOrderDetail[k]});
+                if (k.indexOf('Date')>-1 && this.ttOrderDetail[k])
+                    this.orderData.push({columnLabel: k, columnValue: this.formatDate(this.ttOrderDetail[k])});
+                else
+                    this.orderData.push({columnLabel: k, columnValue: this.ttOrderDetail[k]});
         for (let k in this.ttCustomer)
             if (k.indexOf('CustNum') === -1 && k.indexOf('SalesRep') === -1 && k.indexOf('_id') === -1)
                 this.customerData.push({columnLabel: k, columnValue: this.ttCustomer[k]});
@@ -120,11 +135,28 @@ export class OrderDetailComponent implements OnInit {
         });
     }
 
-    private editOrder (e) {
-        console.log('orderdetail editOrder',e.index);
-        console.log(this.orderData[e.index]);
-        console.log(this.ttOrderDetail[this.orderData[e.index].columnLabel]);
-        this.orderDataList.scrollToIndexAnimated(e.index);
+    private editOrder (index) {
+        console.log('orderdetail editOrder',index);
+        console.log(this.orderData[index]);
+        console.log(this.ttOrderDetail[this.orderData[index].columnLabel]);
+        this.orderDataList.scrollToIndexAnimated(index);
+    }
+
+    private editDate (index) {
+        console.log('ordedetail editDate',index);
+        console.log(this.ttOrderDetail[this.orderData[index].columnLabel]);
+        this.editColumn = this.orderData[index].columnLabel;
+        this.showingDatePicker = true;
+    }
+
+    private cancelEditColumn () {
+        console.log('ordedetail cancelEditColumn');
+        this.showingDatePicker = false;;
+    }
+
+    private doneEditColumn () {
+        console.log('ordedetail doneEditColumn');
+        this.showingDatePicker = false;;
     }
 
     private updateOrder (index,newValue) {
@@ -222,5 +254,6 @@ export class OrderDetailComponent implements OnInit {
         if (tabNumber === 1) this.orderDataList.scrollToIndexAnimated(0);
         if (tabNumber === 2) this.customerDataList.scrollToIndexAnimated(0);
         this.selectedTab = tabNumber;
+        this.showingDatePicker = false;
     }
 }

@@ -24,7 +24,7 @@
         <ng-template let-dsOrder="item" let-odd="odd">
         <GridLayout class="list-group-item listEven" columns="3*,4*,3*" [ngClass]="{'listOdd':odd}">
             <Label row="0" col="0" [text]="dsOrder.Ordernum"></Label>
-            <Label row="0" col="1" [text]="dsOrder.formattedDate"></Label>
+            <Label row="0" col="1" [text]="dsOrder.OrderDate"></Label>
             <Label row="0" col="2" [text]="dsOrder.OrderStatus"></Label>
         </GridLayout>
         </ng-template>
