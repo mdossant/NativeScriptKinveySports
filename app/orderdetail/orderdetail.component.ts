@@ -25,6 +25,8 @@ export class OrderDetailComponent implements OnInit {
     private title: String;
     private backIcon: String = String.fromCharCode(0xea40);
     private plusIcon: String = String.fromCharCode(0xea0a) + 'L';
+    private cancelIcon: String = String.fromCharCode(0xea0d);
+    private doneIcon: String = String.fromCharCode(0xea10);
     private leftIcon: View;
     private rightIcon: View;
     private enabledButtonColor: Color = new Color('white');

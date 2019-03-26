@@ -34,13 +34,6 @@ DatePicker {
     font-size: 25;
 }
 
-.editButton {
-    font-size: 20;
-    color: gray;
-    text-align: center;
-    margin: 5;
-}
-
 .signinTitle {
     font-size: 25;
 }
@@ -85,6 +78,18 @@ DatePicker {
 .actionBarRightIcon {
     font-family: 'IcoMoon-Free';
     font-size: 25;
+}
+
+.redIcon {
+    font-family: 'IcoMoon-Free';
+    font-size: 30;
+    color: red;
+}
+
+.greenIcon {
+    font-family: 'IcoMoon-Free';
+    font-size: 30;
+    color: green;
 }
 
 .signinBall {
