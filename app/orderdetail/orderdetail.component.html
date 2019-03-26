@@ -22,7 +22,7 @@
             <Button text="Remove Order" class="appButton" (tap)="confirmRemoveOrder()"></Button>
             <ListView id="orderDataList" [items]="orderData">
                 <ng-template let-orderData="item" let-odd="odd" let-index="index">
-                <GridLayout class="list-group-item listEven" columns="6*,6*">
+                <GridLayout columns="6*,6*" height="50" padding="5">
                     <Label row="0" col="0" [text]="orderData.columnLabel" class="columnLabel"></Label>
                     <TextField row="0" col="1" #input [text]="orderData.columnValue" class="columnValue" (focus)="editOrder(index)" (blur)="updateOrder(index,input.text)" [visibility]="(orderData.editable)?'visible':'collapse'"></TextField>
                     <Label row="0" col="1" [text]="orderData.columnValue" class="columnValue" [visibility]="(!orderData.editable&&!orderData.showDatePicker)?'visible':'collapse'"></Label>
@@ -47,7 +47,7 @@
     <StackLayout [visibility]="(selectedTab===1)?'visible':'collapse'" backgroundColor="black">
         <ListView id="customerDataList" [items]="customerData" height="90%">
             <ng-template let-customerData="item" let-odd="odd" let-index="index">
-            <GridLayout class="list-group-item listEven" columns="6*,6*">
+            <GridLayout columns="6*,6*" height="50" padding="5">
                 <Label row="0" col="0" [text]="customerData.columnLabel" class="columnLabel"></Label>
                 <TextField row="0" col="1" #input [text]="customerData.columnValue" class="columnValue" (focus)="editCustomer({index:index})" (blur)="updateCustomer(index,input.text)" [visibility]="(customerData.editable)?'visible':'collapse'"></TextField>
                 <Label row="0" col="1" [text]="customerData.columnValue" class="columnValue" [visibility]="(!customerData.editable)?'visible':'collapse'"></Label>
@@ -67,7 +67,7 @@
             </GridLayout>
             <ListView [items]="ttOrderLine" (itemTap)="showLine($event)" height="100%">
                 <ng-template let-ttOrderLine="item" let-odd="odd">
-                <GridLayout class="list-group-item listEven" columns="3*,3*,3*,3*" [ngClass]="{'listOdd':odd}">
+                <GridLayout columns="3*,3*,3*,3*" height="50" padding="5" [ngClass]="{'listOdd':odd}">
                     <Label row="0" col="0" [text]="ttOrderLine.Linenum"></Label>
                     <Label row="0" col="1" [text]="ttOrderLine.Itemnum"></Label>
                     <Label row="0" col="2" [text]="'$'+ttOrderLine.Price"></Label>

@@ -121,13 +121,7 @@ DatePicker {
 }
 
 .listHeader {
-    padding: 30px;
     background-color: rgb(196, 251, 255);
-}
-
-.listEven {
-    padding: 30px;
-    height: 150px;
 }
 
 .listOdd {

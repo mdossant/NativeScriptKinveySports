@@ -17,7 +17,7 @@
     <Button text="Remove Line" class="appButton" (tap)="confirmRemoveLine()"></Button>
     <ListView id="lineDataList" [items]="lineData" height="45%">
         <ng-template let-lineData="item" let-odd="odd" let-index="index">
-        <GridLayout class="list-group-item listEven" columns="6*,6*">
+        <GridLayout columns="6*,6*" height="50" padding="5">
             <Label row="0" col="0" [text]="lineData.columnLabel" class="columnLabel"></Label>
             <TextField row="0" col="1" #input [text]="lineData.columnValue" class="columnValue" (focus)="editLine(index)" (blur)="updateLine(index,input.text)" [visibility]="(lineData.editable)?'visible':'collapse'"></TextField>
             <Label row="0" col="1" [text]="lineData.columnValue" class="columnValue" [visibility]="(!lineData.editable)?'visible':'collapse'"></Label>

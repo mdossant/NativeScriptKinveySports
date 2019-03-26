@@ -21,7 +21,7 @@
     </GridLayout>
     <ListView [items]="dsCustomer" (itemTap)="showOrders($event)" (loadMoreItems)="loadMoreItems()" height="100%">
             <ng-template let-dsCustomer="item" let-odd="odd">
-            <GridLayout class="list-group-item listEven" columns="2*,11*" [ngClass]="{'listOdd':odd}">
+            <GridLayout columns="2*,11*" height="50" padding="5" [ngClass]="{'listOdd':odd}">
                 <Label row="0" col="0" [text]="dsCustomer.CustNum"></Label>
                 <Label row="0" col="1" [text]="dsCustomer.Name"></Label>
             </GridLayout>
