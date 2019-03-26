@@ -24,8 +24,9 @@
                 <ng-template let-orderData="item" let-odd="odd" let-index="index">
                 <GridLayout class="list-group-item listEven" columns="6*,6*">
                     <Label row="0" col="0" [text]="orderData.columnLabel" class="columnLabel"></Label>
-                    <TextField row="0" col="1" #input [text]="orderData.columnValue" class="columnValue" (focus)="editOrder(index)" (blur)="updateOrder(index,input.text)" [visibility]="(orderData.columnLabel && orderData.columnLabel.indexOf('Date')===-1)?'visible':'collapse'"></TextField>
-                    <Label row="0" col="1" [text]="orderData.columnValue" class="columnValue" (tap)="editDate(index)" [visibility]="(orderData.columnLabel && orderData.columnLabel.indexOf('Date')>-1)?'visible':'collapse'"></Label>
+                    <TextField row="0" col="1" #input [text]="orderData.columnValue" class="columnValue" (focus)="editOrder(index)" (blur)="updateOrder(index,input.text)" [visibility]="(orderData.editable)?'visible':'collapse'"></TextField>
+                    <Label row="0" col="1" [text]="orderData.columnValue" class="columnValue" [visibility]="(!orderData.editable&&!orderData.showDatePicker)?'visible':'collapse'"></Label>
+                    <Label row="0" col="1" [text]="orderData.columnValue" class="columnValue" (tap)="editDate(index)" [visibility]="(orderData.showDatePicker)?'visible':'collapse'"></Label>
                 </GridLayout>
                 </ng-template>
             </ListView>
@@ -48,7 +49,8 @@
             <ng-template let-customerData="item" let-odd="odd" let-index="index">
             <GridLayout class="list-group-item listEven" columns="6*,6*">
                 <Label row="0" col="0" [text]="customerData.columnLabel" class="columnLabel"></Label>
-                <TextField row="0" col="1" #input [text]="customerData.columnValue" class="columnValue" (focus)="editCustomer({index:index})" (blur)="updateCustomer(index,input.text)"></TextField>
+                <TextField row="0" col="1" #input [text]="customerData.columnValue" class="columnValue" (focus)="editCustomer({index:index})" (blur)="updateCustomer(index,input.text)" [visibility]="(customerData.editable)?'visible':'collapse'"></TextField>
+                <Label row="0" col="1" [text]="customerData.columnValue" class="columnValue" [visibility]="(!customerData.editable)?'visible':'collapse'"></Label>
             </GridLayout>
             </ng-template>
         </ListView>

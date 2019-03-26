@@ -11,6 +11,8 @@ import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { ListView } from 'tns-core-modules/ui/list-view';
 import { Page, View } from 'tns-core-modules/ui/page';
+import { Image } from 'tns-core-modules/ui/image';
+import { ImageSource } from 'tns-core-modules/image-source';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 
 @Component({
@@ -33,6 +35,7 @@ export class OrderLineComponent implements OnInit {
     private ttOrderLine = {};
     private lineData = [];
     private lineDataList: ListView;
+    private itemImage: Image;
     private index: Number;
     private currencyFormatter: Intl.NumberFormat;
 
@@ -49,6 +52,7 @@ export class OrderLineComponent implements OnInit {
         this.Ordernum = this.screen.snapshot.params['Ordernum'];
         this.Linenum = this.screen.snapshot.params['Linenum'];
         this.leftIcon = <View>this.page.getViewById('leftIcon');
+        this.itemImage = <Image>this.page.getViewById('itemImage');
         this.lineDataList = <ListView>this.page.getViewById('lineDataList');
         this.currencyFormatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -63,7 +67,16 @@ export class OrderLineComponent implements OnInit {
         this.net.getOrderLine({
             Ordernum: this.Ordernum,
             Linenum: this.Linenum,
-            onSuccess: (ttOrderLine) => this.showOrderLine(ttOrderLine),
+            onSuccess: (ttOrderLine) => {
+                this.net.getItemImage({
+                    Itemnum: ttOrderLine.Itemnum,
+                    onSuccess: (dsItemImage) => {
+                        ttOrderLine.itemImage_id = dsItemImage._id;
+                        ttOrderLine.base64Image = dsItemImage.base64Image;
+                        this.showOrderLine(ttOrderLine);
+                    }
+                });
+            },
             onError: () => {
                 this.app.loading = false;
                 dialog.confirm({
@@ -73,6 +86,19 @@ export class OrderLineComponent implements OnInit {
                 }).then(()=>this.showOrderDetail());
             }
         })
+    }
+
+    private showOrderLine (ttOrderLine) {
+        console.log('orderline showOrderLine',ttOrderLine);
+        this.ttOrderLine = ttOrderLine;
+        this.ttOrderLine['_id'] = this._id;
+        this.title = 'Line# ' + this.Linenum;
+        this.setListData();
+        if (ttOrderLine.base64Image) {
+            let imgSrc = new ImageSource();
+            imgSrc.fromBase64(ttOrderLine.base64Image).then(() => this.itemImage.src = imgSrc);
+        }
+        this.app.loading = false;
     }
 
     private getColumnLabel (name) {
@@ -97,20 +123,16 @@ export class OrderLineComponent implements OnInit {
         console.log('orderline setListData');
         this.lineData = [];
         for (let k in this.ttOrderLine)
-            if (k.indexOf('seq') === -1 && k.indexOf('Ordernum') === -1 && k.indexOf('Linenum') === -1 && k.indexOf('id') === -1)
-                this.lineData.push({columnName: k, columnLabel: this.getColumnLabel(k), columnValue: this.formatColumnValue(k,this.ttOrderLine[k])});
+            if (k.indexOf('seq') === -1 && k.indexOf('Ordernum') === -1 && k.indexOf('Linenum') === -1 && k.indexOf('id') === -1 && k.indexOf('base64Image') === -1)
+                this.lineData.push({
+                    columnName: k,
+                    columnLabel: this.getColumnLabel(k),
+                    columnValue: this.formatColumnValue(k,this.ttOrderLine[k]),
+                    editable: k!=='Itemnum'&&k!=='ExtendedPrice'
+                });
         // trick: add some keyboard buffer area
         for (let i=0; i<6; i++)
             this.lineData.push({});
-    }
-
-    private showOrderLine (ttOrderLine) {
-        console.log('orderline showOrderLine',ttOrderLine);
-        this.ttOrderLine = ttOrderLine;
-        this.ttOrderLine['_id'] = this._id;
-        this.title = 'Line# ' + this.Linenum;
-        this.setListData();
-        this.app.loading = false;
     }
 
     private showItem (e) {

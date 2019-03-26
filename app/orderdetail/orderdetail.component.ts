@@ -123,14 +123,31 @@ export class OrderDetailComponent implements OnInit {
         this.orderData = [];
         this.customerData = [];
         for (let k in this.ttOrderDetail)
-            if (k.indexOf('Ordernum') === -1 && k.indexOf('CustNum') === -1 && k.indexOf('SalesRep') === -1 && k.indexOf('_id') === -1)
+            if (k.indexOf('SalesRep') === -1 && k.indexOf('_id') === -1)
                 if (k.indexOf('Date')>-1 && this.ttOrderDetail[k])
-                    this.orderData.push({columnName: k, columnLabel: this.getColumnLabel(k), columnValue: this.formatDate(this.ttOrderDetail[k])});
+                    this.orderData.push({
+                        columnName: k,
+                        columnLabel: this.getColumnLabel(k),
+                        columnValue: this.formatDate(this.ttOrderDetail[k]),
+                        editable: k!=='Ordernum'&&k!=='CustNum'&&k!=='ExtendedPrice',
+                        showDatePicker: true
+                    });
                 else
-                    this.orderData.push({columnName: k, columnLabel: this.getColumnLabel(k), columnValue: this.ttOrderDetail[k]});
+                    this.orderData.push({
+                        columnName: k,
+                        columnLabel: this.getColumnLabel(k),
+                        columnValue: this.ttOrderDetail[k],
+                        editable: k!=='Ordernum'&&k!=='CustNum'&&k!=='ExtendedPrice',
+                        showDatePicker: false
+                    });
         for (let k in this.ttCustomer)
-            if (k.indexOf('CustNum') === -1 && k.indexOf('SalesRep') === -1 && k.indexOf('_id') === -1)
-                this.customerData.push({columnName: k, columnLabel: this.getColumnLabel(k), columnValue: this.formatColumnValue(k,this.ttCustomer[k])});
+            if (k.indexOf('SalesRep') === -1 && k.indexOf('_id') === -1)
+                this.customerData.push({
+                    columnName: k,
+                    columnLabel: this.getColumnLabel(k),
+                    columnValue: this.formatColumnValue(k,this.ttCustomer[k]),
+                    editable: k!=='CustNum'
+                });
         // trick: add some keyboard buffer area
         for (let i=0; i<6; i++) {
             this.orderData.push({});
