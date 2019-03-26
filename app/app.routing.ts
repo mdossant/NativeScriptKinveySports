@@ -22,7 +22,7 @@ const routes: Routes = [
     { path: "customers/:RepName", component: CustomersComponent },
     { path: "customer/:RepName/:_id", component: CustomerComponent },
     { path: "orders/:RepName/:CustNum/:Name", component: OrdersComponent },
-    { path: "orderdetail/:_id/:RepName/:CustNum/:Name/:Ordernum", component: OrderDetailComponent },
+    { path: "orderdetail/:_id/:RepName/:CustNum/:Name/:Ordernum/:tab", component: OrderDetailComponent },
     { path: "orderline/:_id/:RepName/:CustNum/:Name/:Ordernum/:Linenum", component: OrderLineComponent },
     { path: "item/:_id/:RepName/:CustNum/:Name/:Ordernum/:Itemnum", component: ItemComponent }
 ];

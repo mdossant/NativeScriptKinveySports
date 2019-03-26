@@ -34,6 +34,7 @@ export class OrderLineComponent implements OnInit {
     private lineData = [];
     private lineDataList: ListView;
     private index: Number;
+    private currencyFormatter: Intl.NumberFormat;
 
     public constructor (private app: app, private net: net, private page: Page, private router: RouterExtensions, private screen: ActivatedRoute) {}
 
@@ -49,6 +50,11 @@ export class OrderLineComponent implements OnInit {
         this.Linenum = this.screen.snapshot.params['Linenum'];
         this.leftIcon = <View>this.page.getViewById('leftIcon');
         this.lineDataList = <ListView>this.page.getViewById('lineDataList');
+        this.currencyFormatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2
+        });
         setTimeout(() => this.getOrderLine(),50);
     }
 
@@ -80,12 +86,19 @@ export class OrderLineComponent implements OnInit {
         return label;
     }
 
+    private formatColumnValue (name,value) {
+        console.log('orderline formatColumnValue');
+        if (name.indexOf('Price') > -1)
+            value = this.currencyFormatter.format(value);
+        return value;
+    }
+
     private setListData () {
         console.log('orderline setListData');
         this.lineData = [];
         for (let k in this.ttOrderLine)
             if (k.indexOf('seq') === -1 && k.indexOf('Ordernum') === -1 && k.indexOf('Linenum') === -1 && k.indexOf('id') === -1)
-                this.lineData.push({columnName: k, columnLabel: this.getColumnLabel(k), columnValue: this.ttOrderLine[k]});
+                this.lineData.push({columnName: k, columnLabel: this.getColumnLabel(k), columnValue: this.formatColumnValue(k,this.ttOrderLine[k])});
         // trick: add some keyboard buffer area
         for (let i=0; i<6; i++)
             this.lineData.push({});
@@ -94,6 +107,7 @@ export class OrderLineComponent implements OnInit {
     private showOrderLine (ttOrderLine) {
         console.log('orderline showOrderLine',ttOrderLine);
         this.ttOrderLine = ttOrderLine;
+        this.ttOrderLine['_id'] = this._id;
         this.title = 'Line# ' + this.Linenum;
         this.setListData();
         this.app.loading = false;
@@ -109,7 +123,7 @@ export class OrderLineComponent implements OnInit {
         this.app.animateIcon({
             target: this.leftIcon,
             onSuccess: () => {
-                this.router.navigate(['/orderdetail',this._id,this.RepName,this.CustNum,this.Name,this.Ordernum],{clearHistory:true,transition:{name:'fade'}});
+                this.router.navigate(['/orderdetail',this._id,this.RepName,this.CustNum,this.Name,this.Ordernum,2],{clearHistory:true,transition:{name:'fade'}});
             }
         });
     }
@@ -121,12 +135,23 @@ export class OrderLineComponent implements OnInit {
         this.lineDataList.scrollToIndexAnimated(index);
     }
 
+    private calculateExtPrice() {
+        console.log('orderline calculateExtPrice');
+        this.ttOrderLine['ExtendedPrice'] = this.ttOrderLine['Price'] * this.ttOrderLine['Qty'] * (100 - this.ttOrderLine['Discount']) / 100;
+    }
+
     private updateLine (index,newValue) {
         console.log('orderline updateLine',index,newValue);
-        console.log(this.lineData[index]);
-        console.log(this.ttOrderLine[this.lineData[index].columnName]);
-        if (this.ttOrderLine[this.lineData[index].columnName] !== newValue) {
+        const name = this.lineData[index].columnName;
+        let currentValue = this.ttOrderLine[name];
+        if (name.indexOf('Price') > -1) {
+            currentValue = Number(currentValue);
+            newValue = Number(newValue.replace('$',''));
+        }
+        console.log(currentValue,newValue);
+        if (currentValue !== newValue) {
             this.ttOrderLine[this.lineData[index].columnName] = newValue;
+            this.calculateExtPrice();
             this.setListData();
             this.net.updateOrderLine({
                 ttOrderLine: this.ttOrderLine,

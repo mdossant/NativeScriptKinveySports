@@ -44,6 +44,7 @@ export class OrderDetailComponent implements OnInit {
     private editColumn: String;
     private index: Number;
     private datePicker: DatePicker;
+    private currencyFormatter: Intl.NumberFormat;
     private months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
     public constructor (private app: app, private net: net, private page: Page, private router: RouterExtensions, private screen: ActivatedRoute) {}
@@ -57,11 +58,17 @@ export class OrderDetailComponent implements OnInit {
         this.CustNum = this.screen.snapshot.params['CustNum'];
         this.Name = this.screen.snapshot.params['Name'];
         this.Ordernum = this.screen.snapshot.params['Ordernum'];
+        this.selectedTab = Number(this.screen.snapshot.params['tab']);
         this.leftIcon = <View>this.page.getViewById('leftIcon');
         this.rightIcon = <View>this.page.getViewById('rightIcon');
         this.orderDataList = <ListView>this.page.getViewById('orderDataList');
         this.customerDataList = <ListView>this.page.getViewById('customerDataList');
         this.datePicker = <DatePicker>this.page.getViewById('datePicker');
+        this.currencyFormatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2
+        });
         setTimeout(() => this.getOrderDetail(),50);
     }
 
@@ -101,6 +108,13 @@ export class OrderDetailComponent implements OnInit {
         return label;
     }
 
+    private formatColumnValue (name,value) {
+        console.log('orderdetail formatColumnValue');
+        if (name.indexOf('Balance') > -1 || name.indexOf('CreditLimit') > -1)
+            value = this.currencyFormatter.format(value);
+        return value;
+    }
+
     private setListData () {
         console.log('orderdetail setListData');
         this.orderData = [];
@@ -113,7 +127,7 @@ export class OrderDetailComponent implements OnInit {
                     this.orderData.push({columnName: k, columnLabel: this.getColumnLabel(k), columnValue: this.ttOrderDetail[k]});
         for (let k in this.ttCustomer)
             if (k.indexOf('CustNum') === -1 && k.indexOf('SalesRep') === -1 && k.indexOf('_id') === -1)
-                this.customerData.push({columnName: k, columnLabel: this.getColumnLabel(k), columnValue: this.ttCustomer[k]});
+                this.customerData.push({columnName: k, columnLabel: this.getColumnLabel(k), columnValue: this.formatColumnValue(k,this.ttCustomer[k])});
         // trick: add some keyboard buffer area
         for (let i=0; i<6; i++) {
             this.orderData.push({});
@@ -187,9 +201,10 @@ export class OrderDetailComponent implements OnInit {
 
     private updateOrder (index,newValue) {
         console.log('orderdetail updateOrder',index,newValue);
-        console.log(this.orderData[index]);
-        console.log(this.ttOrderDetail[this.orderData[index].columnName]);
-        if (this.ttOrderDetail[this.orderData[index].columnName] !== newValue) {
+        const name = this.orderData[index].columnName;
+        let currentValue = this.ttOrderDetail[name];
+        console.log(currentValue,newValue);
+        if (currentValue !== newValue) {
             this.ttOrderDetail[this.orderData[index].columnName] = newValue;
             this.setListData();
             this.net.updateOrder({
@@ -219,9 +234,14 @@ export class OrderDetailComponent implements OnInit {
 
     private updateCustomer (index,newValue) {
         console.log('orderdetail updateCustomer',index,newValue);
-        console.log(this.customerData[index]);
-        console.log(this.ttCustomer[this.customerData[index].columnName]);
-        if (this.ttCustomer[this.customerData[index].columnName] !== newValue) {
+        const name = this.customerData[index].columnName;
+        let currentValue = this.ttCustomer[name];
+        if (name.indexOf('Balance') > -1 || name.indexOf('CreditLimit') > -1) {
+            currentValue = Number(currentValue);
+            newValue = Number(newValue.replace('$',''));
+        }
+        console.log(currentValue,newValue);
+        if (currentValue !== newValue) {
             this.ttCustomer[this.customerData[index].columnName] = newValue;
             this.setListData();
             this.net.updateCustomer({

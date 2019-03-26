@@ -60,16 +60,16 @@
             <GridLayout columns="3*,3*,3*,3*" height="50" class="listHeader">
                 <Label row="0" col="0" text="Line#"></Label>
                 <Label row="0" col="1" text="Item#"></Label>
-                <Label row="0" col="2" text="Qty"></Label>
-                <Label row="0" col="3" text="Price"></Label>
+                <Label row="0" col="2" text="Price"></Label>
+                <Label row="0" col="3" text="Qty"></Label>
             </GridLayout>
             <ListView [items]="ttOrderLine" (itemTap)="showLine($event)" height="100%">
                 <ng-template let-ttOrderLine="item" let-odd="odd">
                 <GridLayout class="list-group-item listEven" columns="3*,3*,3*,3*" [ngClass]="{'listOdd':odd}">
                     <Label row="0" col="0" [text]="ttOrderLine.Linenum"></Label>
                     <Label row="0" col="1" [text]="ttOrderLine.Itemnum"></Label>
-                    <Label row="0" col="2" [text]="ttOrderLine.Qty"></Label>
-                    <Label row="0" col="3" [text]="'$'+ttOrderLine.Price"></Label>
+                    <Label row="0" col="2" [text]="'$'+ttOrderLine.Price"></Label>
+                    <Label row="0" col="3" [text]="ttOrderLine.Qty"></Label>
                 </GridLayout>
                 </ng-template>
             </ListView>

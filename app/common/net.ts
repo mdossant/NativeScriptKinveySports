@@ -245,7 +245,7 @@ export class net {
                 data = line;
             },
             (error: Kinvey.BaseError) => {
-                console.error('------------- ERROR fetching item --------------',error.name);
+                console.error('------------- ERROR fetching order line --------------',error.name);
                 if (data.length > 0)
                     params.onSuccess(data[0]);
                 else
@@ -435,14 +435,14 @@ export class net {
     // onSuccess (method): success callback method
     // onError (method): error callback method
     public updateOrderLine (params) {
-        console.log('net updateOrderLine',params.ttOrder);
+        console.log('net updateOrderLine ==============',params.ttOrderLine);
         this.OrderLinesDS.save(params.ttOrderLine).then((result) => {
             console.log('SAVED ORDER LINE - UPDATE',result);
             this.OrderLinesDS.clearSync();
             params.onSuccess();
         }).catch((err)=> {
             console.error('------------- ERROR saving order line (update) -------------',err.name);
-            this.OrdersDS.clearSync();
+            this.OrderLinesDS.clearSync();
             params.onError();
         });
     }

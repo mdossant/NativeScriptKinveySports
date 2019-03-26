@@ -26,8 +26,9 @@ sdk.service ((err, flex) => {
 
     // for JSDO update, need to know key field
     const keys = {
-        'Customers': 'CustNum',
-        'Orders': 'Ordernum'
+        'Customers': ['CustNum'],
+        'Orders': ['Ordernum'],
+        'OrderLines': ['Ordernum','Linenum']
     }
 
     registerServiceObject('SalesReps','R');
@@ -174,7 +175,11 @@ sdk.service ((err, flex) => {
 
         // filter: query filter
         let key = keys[context.serviceObjectName];
-        let filter = key + ' = ' + context.body[key];
+        let filter = '';
+        for (let i=0; i<key.length; i++) {
+            if (filter) filter = filter + ' AND ';
+            filter = filter + key[i] + ' = "' + context.body[key[i]] + '"';
+        }
         
         progressCore.progress.data.getSession({
             name: 'sportsflex',
