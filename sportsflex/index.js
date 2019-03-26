@@ -159,8 +159,18 @@ sdk.service ((err, flex) => {
             ds.create(context.body);
             return ds.saveChanges().toPromise();
         }).then((response) => {
-                console.log('record created',response.dsOrder.ttOrder[0].Ordernum);
+            if (response.dsOrder) {
+                console.log('record created (Order)',response.dsOrder.ttOrder[0].Ordernum);
                 complete().setBody(JSON.stringify(response.dsOrder.ttOrder[0])).ok().next();
+            }
+            else if (response.dsOrderLine) {
+                console.log('record created (OrderLine)',response.dsOrderLine.ttOrderLine[0].Ordernum);
+                complete().setBody(JSON.stringify(response.dsOrderLine.ttOrderLine[0])).ok().next();
+            }
+            else {
+                console.log('record created (other)',response);
+                complete().setBody(JSON.stringify(response)).ok().next();
+            }
         }).catch((err) => {
             console.log('err.message',err.message);
             console.log('err.stack',err.stack);

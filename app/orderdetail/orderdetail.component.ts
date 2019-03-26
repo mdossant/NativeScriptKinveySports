@@ -10,7 +10,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { ListView } from 'tns-core-modules/ui/list-view';
-import { Page, View } from 'tns-core-modules/ui/page';
+import { Page, View, Color } from 'tns-core-modules/ui/page';
 import { DatePicker } from 'tns-core-modules/ui/date-picker';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 
@@ -27,6 +27,8 @@ export class OrderDetailComponent implements OnInit {
     private plusIcon: String = String.fromCharCode(0xea0a) + 'L';
     private leftIcon: View;
     private rightIcon: View;
+    private enabledButtonColor: Color = new Color('white');
+    private disabledButtonColor: Color = new Color('rgb(190,190,190)');
     private _id: String;
     private RepName: String;
     private CustNum: String;
@@ -42,6 +44,7 @@ export class OrderDetailComponent implements OnInit {
     private customerDataList: ListView;
     private showingDatePicker: Boolean = false;
     private editColumn: String;
+    private addingOrderLine: Boolean = false;
     private index: Number;
     private datePicker: DatePicker;
     private currencyFormatter: Intl.NumberFormat;
@@ -152,11 +155,15 @@ export class OrderDetailComponent implements OnInit {
 
     private showLine (e) {
         console.log('orderdetail showLine',e.index);
+        if (this.addingOrderLine)
+            return;
         this.router.navigate(['/orderline',this._id,this.RepName,this.CustNum,this.Name,this.Ordernum,this.ttOrderLine[e.index].Linenum],{clearHistory:true,transition:{name:'fade'}});
     }
 
     private showOrders () {
         console.log('orderdetail showOrders');
+        if (this.addingOrderLine)
+            return;
         this.app.animateIcon({
             target: this.leftIcon,
             onSuccess: () => {
@@ -262,18 +269,44 @@ export class OrderDetailComponent implements OnInit {
         }
     }
 
-    private addLine () {
-        console.log('orderdetail addLine');
+    private addOrderLine () {
+        console.log('orderdetail addOrderLine');
+        if (this.addingOrderLine)
+            return;
         this.app.animateIcon({
             target: this.rightIcon,
             onSuccess: () => {
-                console.log('will add line -- TBD');
+                console.log('will add order line now');
+                this.addingOrderLine = true;
+                this.leftIcon.color = this.disabledButtonColor;
+                this.rightIcon.color = this.disabledButtonColor;
+                this.title = 'Adding order line...';
+                this.net.addOrderLine({
+                    Ordernum: this.Ordernum,
+                    onSuccess: (_id,Linenum) => {
+                        this.router.navigate(['/orderline',_id,this.RepName,this.CustNum,this.Name,this.Ordernum,Linenum],{clearHistory:true,transition:{name:'fade'}});
+                    },
+                    onError: () => {
+                        dialog.confirm({
+                            title: 'Could Not Add Order Line',
+                            message: 'Ensure your have a strong network signal and try again.',
+                            okButtonText: 'OK'
+                        }).then(() => {
+                            this.addingOrderLine = false;
+                            this.leftIcon.color = this.enabledButtonColor;
+                            this.rightIcon.color = this.enabledButtonColor;
+                            this.title = this.Name;
+                        })
+                    }
+                });
             }
         });
     }
 
     private confirmRemoveOrder () {
         console.log('orderdetail confirmRemoveOrder');
+        if (this.addingOrderLine)
+            return;
         dialog.confirm('Are you sure you want to remove this order and all of its order lines?')
         .then((reply)=>{
             if (reply) this.removeOrder();
@@ -297,6 +330,8 @@ export class OrderDetailComponent implements OnInit {
 
     private selectTab (tabNumber) {
         console.log('orderdetail selectTab',tabNumber);
+        if (this.addingOrderLine)
+            return;
         if (tabNumber === 0) this.orderDataList.scrollToIndexAnimated(0);
         if (tabNumber === 1) this.customerDataList.scrollToIndexAnimated(0);
         this.selectedTab = tabNumber;

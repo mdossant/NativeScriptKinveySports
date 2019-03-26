@@ -5,7 +5,7 @@
         <Label [text]="title" class="title" (tap)="showOrders()"></Label>
     </StackLayout>
     <ActionItem ios.position="left" (tap)="showOrders()"><Label id="leftIcon" [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
-    <ActionItem ios.position="right" (tap)="addLine()"><Label id="rightIcon" [text]="plusIcon" class="actionBarRightIcon"></Label></ActionItem>
+    <ActionItem ios.position="right" (tap)="addOrderLine()"><Label id="rightIcon" [text]="plusIcon" class="actionBarRightIcon"></Label></ActionItem>
     <NavigationButton visibility="collapsed"></NavigationButton>
 </ActionBar>
 

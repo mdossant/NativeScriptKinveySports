@@ -180,8 +180,9 @@ export class OrderLineComponent implements OnInit {
     }
     private removeLine () {
         console.log('orderline removeLine');
-        this.net.removeOrder({
+        this.net.removeOrderLine({
             Ordernum: this.Ordernum,
+            Linenum: this.Linenum,
             onSuccess: () => this.showOrderDetail(),
             onError: () => {
                 this.app.loading = false;

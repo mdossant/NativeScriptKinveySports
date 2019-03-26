@@ -412,18 +412,18 @@ export class net {
         });
     }    
 
-    // ===== addLine =====
+    // ===== addOrderLine =====
     // Ordernum (string): order number
     // onSuccess (method): success callback method
     // onError (method): error callback method
-    public addLine (params) {
-        console.log('net addLine',params.CustNum);
-        this.OrdersDS.save({
+    public addOrderLine (params) {
+        console.log('net addOrderLine',params.Ordernum);
+        this.OrderLinesDS.save({
             Ordernum: Number(params.Ordernum)
         }
         ).then((line) => {
             console.log('SAVED ORDER LINE',line);
-            params.onSuccess(line.Ordernum);
+            params.onSuccess(line._id,line.Linenum);
         }).catch((err)=> {
             console.error('------------- ERROR saving order line -------------',err.name);
             params.onError();
@@ -443,6 +443,27 @@ export class net {
         }).catch((err)=> {
             console.error('------------- ERROR saving order line (update) -------------',err.name);
             this.OrderLinesDS.clearSync();
+            params.onError();
+        });
+    }
+
+    // ===== removeOrderLine =====
+    // Ordernum (string): order number
+    // Linenum (string): order line number
+    // onSuccess (method): success callback method
+    // onError (method): error callback method
+    public removeOrderLine (params) {
+        console.log('net removeOrderLine',params.Ordernum);
+        const query = new Kinvey.Query;
+        query.equalTo('Ordernum',Number(params.Ordernum));
+        query.equalTo('Linenum',Number(params.Linenum));
+        this.OrderLinesDS.remove(query)
+        .then((result) => {
+            console.log('DELETED ORDER LINE',result);
+            this.OrderLinesDS.clearSync();
+            params.onSuccess();
+        }).catch((err)=> {
+            console.error('------------- ERROR removing order line -------------',err.name);
             params.onError();
         });
     }
