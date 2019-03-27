@@ -14,6 +14,7 @@ import { Page, View } from 'tns-core-modules/ui/page';
 import { Image } from 'tns-core-modules/ui/image';
 import { ImageSource } from 'tns-core-modules/image-source';
 import * as dialog from 'tns-core-modules/ui/dialogs';
+import { TextField } from 'tns-core-modules/ui/text-field/text-field';
 
 @Component({
     selector: 'ns-orderline',
@@ -25,6 +26,7 @@ export class OrderLineComponent implements OnInit {
 
     private title: String;
     private backIcon: String = String.fromCharCode(0xea40);
+    private cancelIcon: String = String.fromCharCode(0xea0d);
     private leftIcon: View;
     private _id: String;
     private RepName: String;
@@ -38,6 +40,12 @@ export class OrderLineComponent implements OnInit {
     private itemImage: Image;
     private index: Number;
     private currencyFormatter: Intl.NumberFormat;
+    private showingItemLookup: Boolean = false;
+    private lookupSearchInput: TextField;
+    private lookupColumnName;
+    private lookupColumnIndex: Number;
+    private ttItem = [];
+    private loadingItems: Boolean = false;
 
     public constructor (private app: app, private net: net, private page: Page, private router: RouterExtensions, private screen: ActivatedRoute) {}
 
@@ -54,6 +62,7 @@ export class OrderLineComponent implements OnInit {
         this.leftIcon = <View>this.page.getViewById('leftIcon');
         this.itemImage = <Image>this.page.getViewById('itemImage');
         this.lineDataList = <ListView>this.page.getViewById('lineDataList');
+        this.lookupSearchInput = <TextField>this.page.getViewById('lookupSearchInput');
         this.currencyFormatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
@@ -157,6 +166,72 @@ export class OrderLineComponent implements OnInit {
         this.lineDataList.scrollToIndexAnimated(index);
     }
 
+    private getItems (loadMoreItems) {
+        console.log('orderline getItems');
+        this.loadingItems = true;
+        this.net.getItems({
+            ItemName: this.lookupSearchInput.text,
+            loadMoreItems: loadMoreItems,
+            sortField: 'ItemName',
+            onSuccess: (ttItem) => this.showItems(ttItem),
+            onError: () => {
+                this.loadingItems = false;
+                dialog.confirm({
+                    title: 'Could Not Download Items',
+                    message: 'Ensure your have a strong network signal and try again.',
+                    okButtonText: 'OK'
+                });
+            }
+        });
+    }
+
+    private showItems (ttItem) {
+        console.log('orderline showItems',ttItem.length);
+        for (let i=0; i<ttItem.length; i++)
+           this.ttItem.push(ttItem[i]);
+        this.loadingItems = false;
+    }
+
+    private loadMoreItems () {
+        console.log('orderline loadMoreItems');
+        if (!this.loadingItems && this.ttItem.length === 25) this.getItems(true);
+    }
+
+    private showLookup (index) {
+        console.log('orderline showLookup',index);
+        console.log(this.lineData[index]);
+        console.log(this.ttOrderLine[this.lineData[index].columnName]);
+        this.lookupSearchInput.text = '';
+        this.lookupColumnName = this.lineData[index].columnName;
+        this.lookupColumnIndex = index;
+        if (this.lineData[index].columnName === 'Itemnum') {
+            this.showingItemLookup = true;
+            this.getItems(false);
+        }
+    }
+
+    private cancelLookup () {
+        console.log('orderline cancelLookup');
+        this.lookupSearchInput.dismissSoftInput();
+        this.showingItemLookup = false;
+    }
+
+    private doneLookup (e) {
+        console.log('orderline doneLookup',this.lookupColumnName,e.index,this.ttItem[e.index]);
+        this.ttOrderLine['Price'] = this.ttItem[e.index].Price;
+        this.updateLine(this.lookupColumnIndex,this.ttItem[e.index][this.lookupColumnName]);
+        this.lookupSearchInput.dismissSoftInput();
+        this.showingItemLookup = false;
+    }
+
+    private lookupSearch () {
+        console.log('orderline lookupSearch',this.lookupSearchInput.text);
+        if (!this.loadingItems) {
+            this.ttItem = [];
+            this.getItems(false);
+        }
+    }
+
     private calculateExtPrice() {
         console.log('orderline calculateExtPrice');
         this.ttOrderLine['ExtendedPrice'] = this.ttOrderLine['Price'] * this.ttOrderLine['Qty'] * (100 - this.ttOrderLine['Discount']) / 100;
@@ -174,12 +249,16 @@ export class OrderLineComponent implements OnInit {
         if (currentValue !== newValue) {
             this.ttOrderLine[this.lineData[index].columnName] = newValue;
             this.calculateExtPrice();
-            this.setListData();
+//            this.setListData();
             this.net.updateOrderLine({
                 ttOrderLine: this.ttOrderLine,
-                onSuccess: () => {console.log('orderline updateLine SUCCESS')},
+                onSuccess: () => {
+                    console.log('orderline updateLine SUCCESS');
+                    this.getOrderLine();
+                },
                 onError: () => {
                     console.log('orderline updateLine ERROR?');
+                    this.getOrderLine();
                     /*
                     this.app.loading = false;
                     dialog.confirm({

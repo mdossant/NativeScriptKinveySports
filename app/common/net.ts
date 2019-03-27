@@ -256,6 +256,42 @@ export class net {
         );
     }
 
+    // ===== getItems =====
+    // loadMoreItems (boolean): load next batch or first batch
+    // ItemName (string): query (search) by itemName
+    // sortField (string): field on which to sort entities
+    // onSuccess (method): success callback method
+    // onError (method): error callback method
+    public getItems (params) {
+        console.log('net getItems',params.ItemName);
+        if (params.loadMoreItems)
+            this.skip = this.skip + this.app.props.limit;
+        else
+            this.skip = 0;
+        let data = [];
+        let query = new Kinvey.Query;
+        if (params.ItemName) query.matches('ItemName',new RegExp('^' + params.ItemName));
+        query.skip = this.skip;
+        query.limit = this.app.props.limit;
+        query.fields = ['Itemnum','ItemName'];
+        query.ascending(params.sortField);
+        this.ItemsDS.find(query).subscribe(
+            (items) => {
+                console.log('------------ RESULTS # -----------',items.length);
+                data = items;
+            }, 
+            (error: Kinvey.BaseError) => {
+                console.error('------------- ERROR fetching items -------------',error.name);
+                if (data.length > 0)
+                    params.onSuccess(data);
+                else
+                    params.onError();
+                return;
+            },
+            () => params.onSuccess(data)
+        );
+    }
+
     // ===== getItem =====
     // Itemnum (string): item number
     // onSuccess (method): success callback method

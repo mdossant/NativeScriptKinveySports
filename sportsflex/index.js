@@ -67,8 +67,14 @@ sdk.service ((err, flex) => {
         if (query && query.query) {
             let q = JSON.parse(query.query);
             for (k in q) {
+                let v = q[k];
+                console.log('======= k ======',k);
+                console.log('======= v ======',v);
                 if (ablFilter) ablFilter = ablFilter + ' AND ';
-                ablFilter = ablFilter + k + '="' + q[k] + '"';
+                if (v.$regex)
+                    ablFilter = ablFilter + k + ' MATCHES "*' + v.$regex.substr(1) + '*"';
+                else
+                    ablFilter = ablFilter + k + ' = "' + v + '"';
                 // need to implement other comparison operators
             }
         }

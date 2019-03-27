@@ -9,8 +9,8 @@
 
 <StackLayout backgroundColor="black" style="padding:30px;">
     <Image src="~/assets/img/ball.png" class="signinBall"></Image>
-    <TextField id="userName" hint="👤 Username" editable="{{fieldsEnabled}}" class="signinInput" (textChange)="newUsername($event)"></TextField>
-    <TextField id="password" hint="🔑 Password" editable="{{fieldsEnabled}}" class="signinInput" (textChange)="newPassword($event)" secure="true"></TextField>
+    <TextField id="userName" hint="👤 Username" editable="{{fieldsEnabled}}" class="signinInput" (textChange)="newUsername()"></TextField>
+    <TextField id="password" hint="🔑 Password" editable="{{fieldsEnabled}}" class="signinInput" (textChange)="newPassword()" secure="true"></TextField>
     <Button [text]="btnText" (tap)="signin()" isEnabled="{{btnEnabled}}" class="appButton"></Button>
     <Label text="NativeScript Kinvey OpenEdge Sports Demo App" class="appTitle" textWrap="true"></Label>
     <Label [text]="'Version ' + app.props.version" class="appInfo"></Label>

@@ -12,7 +12,7 @@
     <Image #img (loaded)="app.animateLoading(img)" src="~/assets/img/ball.png" class="ball"></Image>
 </StackLayout>
 
-<StackLayout [visibility]="(app.loading)?'collapse':'visible'" backgroundColor="black">
+<StackLayout [visibility]="(app.loading||showingItemLookup)?'collapse':'visible'" backgroundColor="black">
     <Label [text]="Name" class="customerName"></Label>
     <Button text="Remove Line" class="appButton" (tap)="confirmRemoveLine()"></Button>
     <ListView id="lineDataList" [items]="lineData" height="45%">
@@ -20,10 +20,26 @@
         <GridLayout columns="6*,6*" height="50" padding="5">
             <Label row="0" col="0" [text]="lineData.columnLabel" class="columnLabel"></Label>
             <TextField row="0" col="1" #input [text]="lineData.columnValue" class="columnValue" (focus)="editLine(index)" (blur)="updateLine(index,input.text)" [visibility]="(lineData.editable)?'visible':'collapse'"></TextField>
-            <Label row="0" col="1" [text]="lineData.columnValue" class="columnValue" [visibility]="(!lineData.editable)?'visible':'collapse'"></Label>
+            <Label row="0" col="1" [text]="lineData.columnValue" class="columnValue" (tap)="showLookup(index)" [visibility]="(!lineData.editable)?'visible':'collapse'"></Label>
         </GridLayout>
         </ng-template>
     </ListView>
     <Image id="itemImage" [visibility]="(ttOrderLine.base64Image)?'visible':'collapse'"></Image>
     <Image src="~/assets/img/nophoto.png" [visibility]="(!ttOrderLine.base64Image)?'visible':'collapse'"></Image>    
 </StackLayout>
+
+<StackLayout [visibility]="(showingItemLookup)?'visible':'collapse'" backgroundColor="black">
+    <Label text="Item Lookup" class="customerName"></Label>
+    <GridLayout columns="7*,1*" height="10%">
+        <TextField id="lookupSearchInput" col="0" hint="Search items" (textChange)="lookupSearch()" class="searchInput"></TextField>
+        <Button col="1" [text]="cancelIcon" class="redIcon" (tap)="cancelLookup()"></Button>
+    </GridLayout>
+    <ListView [items]="ttItem" (itemTap)="doneLookup($event)" (loadMoreItems)="loadMoreItems()" height="100%">
+            <ng-template let-ttItem="item" let-odd="odd">
+            <GridLayout columns="2*,11*" height="50" padding="5" [ngClass]="{'listOdd':odd}">
+                <Label row="0" col="0" [text]="ttItem.Itemnum"></Label>
+                <Label row="0" col="1" [text]="ttItem.ItemName"></Label>
+            </GridLayout>
+        </ng-template>
+    </ListView>
+</StackLayout>    
