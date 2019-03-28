@@ -194,7 +194,7 @@ export class OrderLineComponent implements OnInit {
 
     private loadMoreItems () {
         console.log('orderline loadMoreItems');
-        if (!this.loadingItems && this.ttItem.length === 25) this.getItems(true);
+        if (!this.loadingItems) this.getItems(true);
     }
 
     private showLookup (index) {

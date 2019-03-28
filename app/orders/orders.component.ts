@@ -112,7 +112,7 @@ export class OrdersComponent implements OnInit {
                 this.net.addOrder({
                     CustNum: this.CustNum,
                     onSuccess: (_id,Ordernum) => {
-                        this.router.navigate(['/orderdetail',_id,this.RepName,this.CustNum,this.Name,Ordernum],{clearHistory:true,transition:{name:'fade'}});
+                        this.router.navigate(['/orderdetail',_id,this.RepName,this.CustNum,this.Name,Ordernum,0],{clearHistory:true,transition:{name:'fade'}});
                     },
                     onError: () => {
                         dialog.confirm({
