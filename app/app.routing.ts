@@ -24,7 +24,7 @@ const routes: Routes = [
     { path: "orders/:RepName/:CustNum/:Name", component: OrdersComponent },
     { path: "orderdetail/:_id/:RepName/:CustNum/:Name/:Ordernum/:tab", component: OrderDetailComponent },
     { path: "orderline/:_id/:RepName/:CustNum/:Name/:Ordernum/:Linenum", component: OrderLineComponent },
-    { path: "item/:_id/:RepName/:CustNum/:Name/:Ordernum/:Itemnum", component: ItemComponent }
+    { path: "item/:_id/:RepName/:CustNum/:Name/:Ordernum/:Linenum/:Itemnum", component: ItemComponent }
 ];
 
 @NgModule({

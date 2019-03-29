@@ -26,6 +26,7 @@ export class OrderLineComponent implements OnInit {
 
     private title: String;
     private backIcon: String = String.fromCharCode(0xea40);
+    private infoIcon: String = String.fromCharCode(0xea0c);
     private cancelIcon: String = String.fromCharCode(0xea0d);
     private leftIcon: View;
     private _id: String;
@@ -142,11 +143,6 @@ export class OrderLineComponent implements OnInit {
         // trick: add some keyboard buffer area
         for (let i=0; i<6; i++)
             this.lineData.push({});
-    }
-
-    private showItem (e) {
-        console.log('orderline showItem',e.index);
-        this.router.navigate(['/item',this._id,this.RepName,this.CustNum,this.Name,this.Ordernum,this.ttOrderLine[e.index].Itemnum],{clearHistory:true,transition:{name:'fade'}});
     }
 
     private showOrderDetail () {
@@ -294,5 +290,10 @@ export class OrderLineComponent implements OnInit {
                 });
             }
         });
+    }
+
+    private showItem () {
+        console.log('orderline showItem');
+        this.router.navigate(['/item',this._id,this.RepName,this.CustNum,this.Name,this.Ordernum,this.Linenum,this.ttOrderLine['Itemnum']],{clearHistory:true,transition:{name:'fade'}});
     }
 }

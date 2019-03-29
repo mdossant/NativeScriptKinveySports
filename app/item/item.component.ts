@@ -32,6 +32,7 @@ export class ItemComponent implements OnInit {
     private RepName: String;
     private CustNum: String;
     private Ordernum: String;
+    private Linenum: String;
     private Itemnum: String;
     private Name: String;
     private itemImage: Image;
@@ -49,6 +50,7 @@ export class ItemComponent implements OnInit {
         this.CustNum = this.screen.snapshot.params['CustNum'];
         this.Name = this.screen.snapshot.params['Name'];
         this.Ordernum = this.screen.snapshot.params['Ordernum'];
+        this.Linenum = this.screen.snapshot.params['Linenum'];
         this.Itemnum = this.screen.snapshot.params['Itemnum'];
         this.itemImage = <Image>this.page.getViewById('itemImage');
         this.leftIcon = <View>this.page.getViewById('leftIcon');
@@ -76,7 +78,7 @@ export class ItemComponent implements OnInit {
                     title: 'Could Not Download Item',
                     message: 'Ensure your have a strong network signal and try again.',
                     okButtonText: 'OK'
-                }).then(()=>this.showOrderDetail());
+                }).then(()=>this.showOrderLine());
             }
         });
     }
@@ -125,12 +127,12 @@ export class ItemComponent implements OnInit {
         });
     }
 
-    private showOrderDetail () {
-        console.log('item showOrderDetail');
+    private showOrderLine () {
+        console.log('item showOrderLine');
         this.app.animateIcon({
             target: this.leftIcon,
             onSuccess: () => {
-                this.router.navigate(['/orderdetail',this._id,this.RepName,this.CustNum,this.Name,this.Ordernum],{clearHistory:true,transition:{name:'fade'}});
+                this.router.navigate(['/orderline',this._id,this.RepName,this.CustNum,this.Name,this.Ordernum,this.Linenum],{clearHistory:true,transition:{name:'fade'}});
             }
         });
     }

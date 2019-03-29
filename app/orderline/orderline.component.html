@@ -5,6 +5,7 @@
         <Label [text]="title" class="title" (tap)="showOrderDetail()"></Label>
     </StackLayout>
     <ActionItem ios.position="left" (tap)="showOrderDetail()"><Label id="leftIcon" [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
+    <ActionItem ios.position="right" (tap)="showItem()"><Label id="rightIcon" [text]="infoIcon" class="actionBarRightIcon"></Label></ActionItem>
     <NavigationButton visibility="collapsed"></NavigationButton>
 </ActionBar>
 

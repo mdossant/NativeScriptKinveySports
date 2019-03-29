@@ -4,7 +4,7 @@
         android:horizontalAlignment="left">
         <Label [text]="title" class="title" (tap)="showOrderDetail()"></Label>
     </StackLayout>
-    <ActionItem ios.position="left" (tap)="showOrderDetail()"><Label id="leftIcon" [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
+    <ActionItem ios.position="left" (tap)="showOrderLine()"><Label id="leftIcon" [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
     <ActionItem ios.position="right" (tap)="takePicture()"><Label id="rightIcon" [text]="cameraIcon" class="actionBarRightIcon"></Label></ActionItem>
     <NavigationButton visibility="collapsed"></NavigationButton>
 </ActionBar>
@@ -16,7 +16,7 @@
 <StackLayout [visibility]="(app.loading)?'collapse':'visible'">
     <ListView [items]="itemData" height="60%">
             <ng-template let-itemData="item" let-odd="odd">
-            <GridLayout class="list-group-item listEven" columns="6*,6*">
+            <GridLayout columns="6*,6*" height="50" padding="5">
                 <Label row="0" col="0" [text]="itemData.columnLabel" class="columnLabel"></Label>
                 <Label row="0" col="1" [text]="itemData.columnValue" class="columnValue"></Label>
             </GridLayout>
