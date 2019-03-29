@@ -36,7 +36,8 @@ DatePicker {
 
 .searchInput {
     color: white;
-    font-size: 20;
+    placeholder-color: rgb(87, 87, 87);
+    font-size: 25;
     border-width: 2px;
     border-color: white;
     margin-top: 10;
@@ -130,6 +131,7 @@ DatePicker {
     color: white;
     border-width: 2px;
     border-color: white;
+    placeholder-color: rgb(87, 87, 87);
     padding: 5px;
     width: 90%;
 }
