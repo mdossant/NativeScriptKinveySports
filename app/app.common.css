@@ -56,7 +56,6 @@ DatePicker {
     font-size: 22;
     color: cyan;
     text-align: center;
-    margin: 10;
 }
 
 .appInfo {
@@ -138,6 +137,8 @@ DatePicker {
 
 .listHeader {
     background-color: rgb(196, 251, 255);
+    font-size: 20;
+    color: gray;
 }
 
 .listOdd {

@@ -49,8 +49,8 @@ export class OrderDetailComponent implements OnInit {
     private addingOrderLine: Boolean = false;
     private index: Number;
     private datePicker: DatePicker;
+    private dateFormatter: Intl.DateTimeFormat;
     private currencyFormatter: Intl.NumberFormat;
-    private months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
     public constructor (private app: app, private net: net, private page: Page, private router: RouterExtensions, private screen: ActivatedRoute) {}
 
@@ -69,11 +69,8 @@ export class OrderDetailComponent implements OnInit {
         this.orderDataList = <ListView>this.page.getViewById('orderDataList');
         this.customerDataList = <ListView>this.page.getViewById('customerDataList');
         this.datePicker = <DatePicker>this.page.getViewById('datePicker');
-        this.currencyFormatter = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 2
-        });
+        this.dateFormatter = new Intl.DateTimeFormat('en-US', {month: 'short', day: 'numeric', year: 'numeric'});
+        this.currencyFormatter = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', minimumFractionDigits: 2});
         setTimeout(() => this.getOrderDetail(),50);
     }
 
@@ -96,10 +93,7 @@ export class OrderDetailComponent implements OnInit {
     private formatDate (value) {
         console.log('orderDetail formatDate');
         const date = new Date(value);
-        const month = date.getMonth();
-        const day = date.getDate();
-        const year = date.getFullYear();
-        return this.months[month] + ' ' + day + ', ' + year;
+        return this.dateFormatter.format(date);
     }
 
     private getColumnLabel (name) {

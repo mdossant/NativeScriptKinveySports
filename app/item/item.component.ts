@@ -38,6 +38,8 @@ export class ItemComponent implements OnInit {
     private itemImage: Image;
     private dsItem = {};
     private itemData = [];
+    private amountFormatter: Intl.NumberFormat;
+    private currencyFormatter: Intl.NumberFormat;
 
     public constructor (private app: app, private net: net, private page: Page, private router: RouterExtensions, private screen: ActivatedRoute) {}
 
@@ -55,6 +57,8 @@ export class ItemComponent implements OnInit {
         this.itemImage = <Image>this.page.getViewById('itemImage');
         this.leftIcon = <View>this.page.getViewById('leftIcon');
         this.rightIcon = <View>this.page.getViewById('rightIcon');
+        this.amountFormatter = new Intl.NumberFormat('en-US', {style: 'amount', maximumFractionDigits: 0});
+        this.currencyFormatter = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2});
         setTimeout(()=>this.getItem(),50);
     }
 
@@ -85,16 +89,16 @@ export class ItemComponent implements OnInit {
 
     private showItem (dsItem) {
         console.log('item showItem');        
-        this.title = dsItem.ItemName;
+        this.title = 'Item Master';
         this.dsItem = dsItem;
         this.itemData.push({columnLabel: 'Item#',       columnValue: this.Itemnum});
         this.itemData.push({columnLabel: 'Name',        columnValue: dsItem.ItemName});
         this.itemData.push({columnLabel: 'Category',    columnValue: dsItem.Category2});
         this.itemData.push({columnLabel: 'Subcategory', columnValue: dsItem.Category1});
-        this.itemData.push({columnLabel: 'On Hand',     columnValue: dsItem.Onhand});
-        this.itemData.push({columnLabel: 'Allocated',   columnValue: dsItem.Allocated});
-        this.itemData.push({columnLabel: 'Available',   columnValue: dsItem.Onhand - dsItem.Allocated});
-        this.itemData.push({columnLabel: 'Price',       columnValue: '$' + dsItem.Price});
+        this.itemData.push({columnLabel: 'On Hand',     columnValue: this.amountFormatter.format(dsItem.Onhand)});
+        this.itemData.push({columnLabel: 'Allocated',   columnValue: this.amountFormatter.format(dsItem.Allocated)});
+        this.itemData.push({columnLabel: 'Available',   columnValue: this.amountFormatter.format(dsItem.Onhand - dsItem.Allocated)});
+        this.itemData.push({columnLabel: 'Price',       columnValue: this.currencyFormatter.format(dsItem.Price)});
         if (dsItem.base64Image) {
             let imgSrc = new ImageSource();
             imgSrc.fromBase64(dsItem.base64Image).then(() => this.itemImage.src = imgSrc);

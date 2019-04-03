@@ -16,15 +16,15 @@
 <StackLayout [visibility]="(app.loading)?'collapse':'visible'">
     <Label text="Here are your customers" class="customersListTitle"></Label>
     <GridLayout columns="2*,11*" height="50" class="listHeader">
-        <Label row="0" col="0" text="#"></Label>
-        <Label row="0" col="1" text="Customer"></Label>
+        <Label row="0" col="0" text="#" verticalAlignment="center"></Label>
+        <Label row="0" col="1" text="Customer" verticalAlignment="center"></Label>
     </GridLayout>
     <ListView [items]="dsCustomer" (itemTap)="showOrders($event)" (loadMoreItems)="loadMoreItems()" height="100%">
-            <ng-template let-dsCustomer="item" let-odd="odd">
-            <GridLayout columns="2*,11*" height="50" padding="5" [ngClass]="{'listOdd':odd}">
-                <Label row="0" col="0" [text]="dsCustomer.CustNum"></Label>
-                <Label row="0" col="1" [text]="dsCustomer.Name"></Label>
-            </GridLayout>
+        <ng-template let-dsCustomer="item" let-odd="odd">
+        <GridLayout columns="2*,11*" height="50" padding="5" class="listEven" [ngClass]="{'listOdd':odd}">
+            <Label row="0" col="0" [text]="dsCustomer.CustNum" verticalAlignment="center"></Label>
+            <Label row="0" col="1" [text]="dsCustomer.Name" verticalAlignment="center"></Label>
+        </GridLayout>
         </ng-template>
     </ListView>
 </StackLayout>

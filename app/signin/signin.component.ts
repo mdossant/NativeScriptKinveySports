@@ -8,11 +8,12 @@ import { app } from '../common/app';
 import { net } from '../common/net';
 import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
-import { Page } from 'tns-core-modules/ui/page';
+import { Page, isAndroid } from 'tns-core-modules/ui/page';
 import { TextField } from 'tns-core-modules/ui/text-field';
 import * as utils from 'tns-core-modules/utils/utils';
 import * as dialog from 'tns-core-modules/ui/dialogs';
-//import * as application from 'tns-core-modules/application';
+import * as application from 'tns-core-modules/application';
+const platform = require('tns-core-modules/platform');
 
 @Component({
     selector: 'ns-signin',
@@ -29,11 +30,14 @@ export class SigninComponent implements OnInit {
     private btnText: String;
     private btnEnabled: Boolean = false;
     private fieldsEnabled: Boolean = true;
+    private smallScreen: Boolean = true;
 
     ngOnInit(): void {
         console.log('signin ngOnInit');
-        //application.android.off(application.AndroidApplication.activityBackPressedEvent);
-        //application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => args.cancel = true);
+        if (isAndroid) {
+            application.android.off(application.AndroidApplication.activityBackPressedEvent);
+            application.android.on(application.AndroidApplication.activityBackPressedEvent, (args: any) => args.cancel = true);
+        }
         this.btnText = 'SIGN IN';
         this.userName = <TextField> this.page.getViewById('userName');
         this.password = <TextField> this.page.getViewById('password');
@@ -52,6 +56,7 @@ export class SigninComponent implements OnInit {
         console.log('signin constructor');
         this.appVersion = 'version ' + this.app.props.version;
         this.appDate = 'as of ' + this.app.props.date;
+        this.smallScreen = platform.screen.mainScreen.heightPixels < 2000;
     }
 
     private launchCompany () {

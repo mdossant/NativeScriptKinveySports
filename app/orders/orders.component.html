@@ -16,16 +16,16 @@
 <StackLayout [visibility]="(app.loading)?'collapse':'visible'">
     <Label [text]="Name" class="customerName"></Label>
     <GridLayout columns="3*,4*,3*" height="50" class="listHeader">
-        <Label row="0" col="0" text="Order#"></Label>
-        <Label row="0" col="1" text="Date"></Label>
-        <Label row="0" col="2" text="Status"></Label>
+        <Label row="0" col="0" text="Order#" verticalAlignment="center"></Label>
+        <Label row="0" col="1" text="Date" verticalAlignment="center"></Label>
+        <Label row="0" col="2" text="Status" verticalAlignment="center"></Label>
     </GridLayout>
     <ListView [items]="dsOrder" (itemTap)="showOrderDetail($event)" height="100%">
         <ng-template let-dsOrder="item" let-odd="odd">
-        <GridLayout columns="3*,4*,3*" height="50" padding="5" [ngClass]="{'listOdd':odd}">
-            <Label row="0" col="0" [text]="dsOrder.Ordernum"></Label>
-            <Label row="0" col="1" [text]="dsOrder.OrderDate"></Label>
-            <Label row="0" col="2" [text]="dsOrder.OrderStatus"></Label>
+        <GridLayout columns="3*,4*,3*" height="50" padding="5" class="listEven" [ngClass]="{'listOdd':odd}">
+            <Label row="0" col="0" [text]="dsOrder.Ordernum" verticalAlignment="center"></Label>
+            <Label row="0" col="1" [text]="dsOrder.OrderDate" verticalAlignment="center"></Label>
+            <Label row="0" col="2" [text]="dsOrder.OrderStatus" verticalAlignment="center"></Label>
         </GridLayout>
         </ng-template>
     </ListView>

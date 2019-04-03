@@ -14,11 +14,8 @@
 }
 
 .appButton {
-    background-color: red;
-    color: white;
-    font-size: 30px;
-    margin-top: 10px;
-    height: 200px;
+    font-size: 30;
+    height: 55;
 }
 
 .signinInput {
@@ -33,4 +30,10 @@
 
 .actionBarRightIcon {
     padding-right: 15;
+}
+
+.listEven {
+    height: 50;
+    font-size: 20;
+    color: black;
 }
