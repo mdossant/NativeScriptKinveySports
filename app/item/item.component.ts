@@ -9,7 +9,7 @@ import { net } from '../common/net';
 import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { Page, View } from 'tns-core-modules/ui/page';
+import { Page, View, isAndroid } from 'tns-core-modules/ui/page';
 import { Image } from 'tns-core-modules/ui/image';
 import { ImageSource } from 'tns-core-modules/image-source';
 import * as dialog from 'tns-core-modules/ui/dialogs';
@@ -90,6 +90,7 @@ export class ItemComponent implements OnInit {
     private showItem (dsItem) {
         console.log('item showItem');        
         this.title = 'Item Master';
+        if (isAndroid) this.title = '< ' + this.title;
         this.dsItem = dsItem;
         this.itemData.push({columnLabel: 'Item#',       columnValue: this.Itemnum});
         this.itemData.push({columnLabel: 'Name',        columnValue: dsItem.ItemName});

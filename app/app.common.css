@@ -156,15 +156,18 @@ DatePicker {
     color: rgb(0, 0, 49);
     font-size: 20;
 }
+
 .tab {
     text-align: center;
     color: white;
     background-color: black;
+    font-size: 20;
 }
 
 .tabSelected {
     text-align: center;
     background-color: red;
+    color: black;
 }
 
 .customerName {

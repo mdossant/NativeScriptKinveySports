@@ -9,7 +9,7 @@ import { net } from '../common/net';
 import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { Page, View, Color } from 'tns-core-modules/ui/page';
+import { Page, View, Color, isAndroid } from 'tns-core-modules/ui/page';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 
 @Component({
@@ -73,6 +73,7 @@ export class OrdersComponent implements OnInit {
             dsOrder[i].OrderDate = this.dateFormatter.format(date);
         }
         this.title = 'Customer\'s Orders';
+        if (isAndroid) this.title = '< ' + this.title;
         this.app.loading = false;
     }
 

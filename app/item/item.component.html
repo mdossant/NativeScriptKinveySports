@@ -2,7 +2,7 @@
     <StackLayout orientation="horizontal"
         ios:horizontalAlignment="center"
         android:horizontalAlignment="left">
-        <Label [text]="title" class="title" (tap)="showOrderDetail()"></Label>
+        <Label [text]="title" class="title" (tap)="showOrderLine()"></Label>
     </StackLayout>
     <ActionItem ios.position="left" (tap)="showOrderLine()"><Label id="leftIcon" [text]="backIcon" class="actionBarLeftIcon"></Label></ActionItem>
     <ActionItem ios.position="right" (tap)="takePicture()"><Label id="rightIcon" [text]="cameraIcon" class="actionBarRightIcon"></Label></ActionItem>
@@ -15,11 +15,11 @@
 
 <StackLayout [visibility]="(app.loading)?'collapse':'visible'">
     <Label [text]="dsItem.ItemName" class="customerName"></Label>
-    <ListView [items]="itemData" height="60%">
+    <ListView [items]="itemData" height="60%" backgroundColor="white">
             <ng-template let-itemData="item" let-odd="odd">
             <GridLayout columns="6*,6*" height="50" padding="5">
-                <Label row="0" col="0" [text]="itemData.columnLabel" class="columnLabel"></Label>
-                <Label row="0" col="1" [text]="itemData.columnValue" class="columnValue"></Label>
+                <Label row="0" col="0" [text]="itemData.columnLabel" class="columnLabel" verticalAlignment="center"></Label>
+                <Label row="0" col="1" [text]="itemData.columnValue" class="columnValue" verticalAlignment="center"></Label>
             </GridLayout>
         </ng-template>
     </ListView>

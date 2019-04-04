@@ -10,7 +10,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { ListView } from 'tns-core-modules/ui/list-view';
-import { Page, View, Color } from 'tns-core-modules/ui/page';
+import { Page, View, Color, isAndroid, isIOS } from 'tns-core-modules/ui/page';
 import { DatePicker } from 'tns-core-modules/ui/date-picker';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 
@@ -120,20 +120,20 @@ export class OrderDetailComponent implements OnInit {
         this.customerData = [];
         for (let k in this.ttOrderDetail)
             if (k.indexOf('SalesRep') === -1 && k.indexOf('_id') === -1)
-                if (k.indexOf('Date')>-1 && this.ttOrderDetail[k])
+                if (isIOS && k.indexOf('Date')>-1)
                     this.orderData.push({
                         columnName: k,
                         columnLabel: this.getColumnLabel(k),
                         columnValue: this.formatDate(this.ttOrderDetail[k]),
-                        editable: k!=='Ordernum'&&k!=='CustNum'&&k!=='ExtendedPrice',
-                        showDatePicker: true
+                        editable: isIOS && k!=='Ordernum' && k!=='CustNum' && k!=='ExtendedPrice',
+                        showDatePicker: isIOS
                     });
                 else
                     this.orderData.push({
                         columnName: k,
                         columnLabel: this.getColumnLabel(k),
                         columnValue: this.ttOrderDetail[k],
-                        editable: k!=='Ordernum'&&k!=='CustNum'&&k!=='ExtendedPrice',
+                        editable: isIOS && k!=='Ordernum' && k!=='CustNum' && k!=='ExtendedPrice',
                         showDatePicker: false
                     });
         for (let k in this.ttCustomer)
@@ -142,7 +142,7 @@ export class OrderDetailComponent implements OnInit {
                     columnName: k,
                     columnLabel: this.getColumnLabel(k),
                     columnValue: this.formatColumnValue(k,this.ttCustomer[k]),
-                    editable: k!=='CustNum'
+                    editable: isIOS && k!=='CustNum'
                 });
         // trick: add some keyboard buffer area
         for (let i=0; i<6; i++) {
@@ -158,6 +158,7 @@ export class OrderDetailComponent implements OnInit {
         else
             this.ttOrderLine = [];
         this.title = 'Order# ' + this.Ordernum;
+        if (isAndroid) this.title = '< ' + this.title;
         this.ttOrderDetail = dsOrderDetail.ttOrderDetail[0];
         this.ttOrderDetail['_id'] = this._id;
         this.ttCustomer = dsOrderDetail.ttCustomer[0];

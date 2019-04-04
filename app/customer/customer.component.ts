@@ -9,7 +9,7 @@ import { net } from '../common/net';
 import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { Page } from 'tns-core-modules/ui/page';
+import { Page, isAndroid } from 'tns-core-modules/ui/page';
 import * as dialog from 'tns-core-modules/ui/dialogs';
 
 @Component({
@@ -58,6 +58,7 @@ export class CustomerComponent implements OnInit {
         console.log('customer showCustomer',dsCustomer);
         this.dsCustomer = dsCustomer;
         this.title = dsCustomer.Name;
+        if (isAndroid) this.title = '< ' + this.title;
         this.getOrders(dsCustomer.CustNum);
     }
 

@@ -10,7 +10,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { ListView } from 'tns-core-modules/ui/list-view';
-import { Page, View } from 'tns-core-modules/ui/page';
+import { Page, View, isAndroid, isIOS } from 'tns-core-modules/ui/page';
 import { Image } from 'tns-core-modules/ui/image';
 import { ImageSource } from 'tns-core-modules/image-source';
 import * as dialog from 'tns-core-modules/ui/dialogs';
@@ -103,6 +103,7 @@ export class OrderLineComponent implements OnInit {
         this.ttOrderLine = ttOrderLine;
         this.ttOrderLine['_id'] = this._id;
         this.title = 'Line# ' + this.Linenum;
+        if (isAndroid) this.title = '< ' + this.title;
         this.setListData();
         if (ttOrderLine.base64Image) {
             let imgSrc = new ImageSource();
@@ -138,7 +139,7 @@ export class OrderLineComponent implements OnInit {
                     columnName: k,
                     columnLabel: this.getColumnLabel(k),
                     columnValue: this.formatColumnValue(k,this.ttOrderLine[k]),
-                    editable: k!=='Itemnum'&&k!=='ExtendedPrice'
+                    editable: isIOS && k!=='Itemnum' && k!=='ExtendedPrice'
                 });
         // trick: add some keyboard buffer area
         for (let i=0; i<6; i++)
@@ -200,7 +201,7 @@ export class OrderLineComponent implements OnInit {
         this.lookupSearchInput.text = '';
         this.lookupColumnName = this.lineData[index].columnName;
         this.lookupColumnIndex = index;
-        if (this.lineData[index].columnName === 'Itemnum') {
+        if (isIOS && this.lineData[index].columnName === 'Itemnum') {
             this.showingItemLookup = true;
             this.getItems(false);
         }
