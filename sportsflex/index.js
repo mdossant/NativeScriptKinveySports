@@ -112,9 +112,9 @@ sdk.service ((err, flex) => {
             name: 'sportsflex',
             serviceURI: serviceURI,
             catalogURI: catalogURI,
-            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
-            //username: username,
-            //password: password,
+            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
+            username: username,
+            password: password,
         }).then(()=>{
             const jsdo = new progressCore.progress.data.JSDO({
                 name: context.serviceObjectName
@@ -151,9 +151,9 @@ sdk.service ((err, flex) => {
             name: 'sportsflex',
             serviceURI: serviceURI,
             catalogURI: catalogURI,
-            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
-            //username: username,
-            //password: password,
+            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
+            username: username,
+            password: password,
         }).then(() => {
             const jsdo = new progressCore.progress.data.JSDO({
                 name: context.serviceObjectName
@@ -201,9 +201,9 @@ sdk.service ((err, flex) => {
             name: 'sportsflex',
             serviceURI: serviceURI,
             catalogURI: catalogURI,
-            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
-            //username: username,
-            //password: password,
+            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
+            username: username,
+            password: password,
         }).then(() => {
             jsdo = new progressCore.progress.data.JSDO({
                 name: context.serviceObjectName
@@ -244,9 +244,9 @@ sdk.service ((err, flex) => {
             name: 'sportsflex',
             serviceURI: serviceURI,
             catalogURI: catalogURI,
-            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
-            //username: username,
-            //password: password,
+            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
+            username: username,
+            password: password,
         }).then(() => {
             jsdo = new progressCore.progress.data.JSDO({
                 name: context.serviceObjectName
@@ -290,9 +290,9 @@ sdk.service ((err, flex) => {
             name: 'sportsflex',
             serviceURI: serviceURI,
             catalogURI: catalogURI,
-            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_ANON
-            //username: username,
-            //password: password,
+            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
+            username: username,
+            password: password,
         }).then(()=>{
             const jsdo = new progressCore.progress.data.JSDO({
                 name: 'Orders'
@@ -301,10 +301,10 @@ sdk.service ((err, flex) => {
         }).then((jsdo) => {
             console.log('jsdo.request.response',jsdo.request.response);
             complete().setBody(jsdo.request.response.dsOrderDetail).ok().next();
-        }).catch((err) => {
-            console.log('err.message',err.message);
-            console.log('err.stack',err.stack);
-            complete(err).runtimeError().next();
+        }).catch((jsdo) => {
+            const err = JSON.parse(jsdo.request.xhr.responseText);
+            console.log('err',err);
+            complete(err._errors[0]._errorMsg).runtimeError().next();
         });
     }
 });
