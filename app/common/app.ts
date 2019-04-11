@@ -6,7 +6,6 @@
 
 import { Injectable } from "@angular/core";
 import {AnimationCurve} from 'tns-core-modules/ui/enums';
-import { opacityProperty } from "tns-core-modules/ui/page/page";
 
 @Injectable()
 
@@ -16,8 +15,8 @@ export class app {
         appKey: 'kid_B1fDHsXzN',
         appSecret: 'ece2258ff70f4cc8934f5dad8913d880',
         limit: 25,
-        version: '0-0-3',
-        date: 'April 10, 2019'
+        version: '0-0-4',
+        date: 'April 11, 2019'
     }
     public loading: Boolean;
     private loadingState: Boolean;
@@ -39,10 +38,5 @@ export class app {
     public animateIcon (params) {
         console.log('app animateIcon');
         params.target.animate({opacity:0,duration:200}).then(() => params.target.animate({opacity:1,duration:200})).then(() => params.onSuccess());
-    }
-    
-    public getProperty (property) {
-        console.log('app getProperty',property);
-        return this.props[property];
     }
 }

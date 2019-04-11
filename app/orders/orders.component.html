@@ -20,7 +20,7 @@
         <Label row="0" col="1" text="Date" verticalAlignment="center"></Label>
         <Label row="0" col="2" text="Status" verticalAlignment="center"></Label>
     </GridLayout>
-    <ListView [items]="dsOrder" (itemTap)="showOrderDetail($event)" height="100%">
+    <ListView [items]="dsOrder" (itemTap)="showOrderDetail($event)" (loadMoreItems)="loadMoreItems()" height="100%">
         <ng-template let-dsOrder="item" let-odd="odd">
         <GridLayout columns="3*,4*,3*" height="50" padding="5" class="listEven" [ngClass]="{'listOdd':odd}">
             <Label row="0" col="0" [text]="dsOrder.Ordernum" verticalAlignment="center"></Label>

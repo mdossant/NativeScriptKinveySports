@@ -155,14 +155,20 @@ export class net {
 
     // ===== getOrders =====
     // CustNum (string): customer number
+    // loadMoreItems (boolean): load next batch or first batch
     // onSuccess (method): success callback method
     // onError (method): error callback method
     public getOrders (params) {
         console.log('net getOrders',params.CustNum);
+        if (params.loadMoreItems)
+            this.skip = this.skip + this.app.props.limit;
+        else
+            this.skip = 0;
         let data = [];
         let query = new Kinvey.Query;
         query.equalTo('CustNum',Number(params.CustNum));
         query.limit = this.app.props.limit;
+        query.skip = this.skip;
         query.fields = ['Ordernum','OrderDate','OrderStatus'];
         query.ascending('OrderDate');
         this.OrdersDS.find(query).subscribe(

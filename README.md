@@ -6,8 +6,8 @@ Features:
 ---------
 * sign in screen w/ app version/date and company info, TOS and privacy links
 * note: sign in using salesrep 3-letter initials, e.g. RDR/rdr, BBB/bbb etc.
-* customers (list) screen w/ a) on-scroll paging, b) filter by rep (user signed in) and c) sort option by number or name
-* orders (list) screen w/ add order, delete order
+* customers (list) screen w/ a) on-scroll auto paging, b) filter by rep (user signed in) and c) sort option by number or name
+* orders (list) screen w/ on-scroll auto paging, add order, delete order
 * order detail screen w/ 3 tabs: lines, order, customer, w/ add line, order delete, order update and customer update
 * date picker for order date fields
 * order line screen w/ line delete/update and photo

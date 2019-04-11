@@ -30,7 +30,7 @@ export class OrdersComponent implements OnInit {
     private RepName: String;
     private CustNum: String;
     private Name: String;
-    private dsOrder = {};
+    private dsOrder = [];
     private addingOrder: Boolean = false;
     private dateFormatter: Intl.DateTimeFormat;
 
@@ -46,13 +46,14 @@ export class OrdersComponent implements OnInit {
         this.leftIcon = <View>this.page.getViewById('leftIcon');
         this.rightIcon = <View>this.page.getViewById('rightIcon');
         this.dateFormatter = new Intl.DateTimeFormat('en-US', {month: 'short', day: 'numeric', year: 'numeric'});
-        setTimeout(()=>this.getOrders(),50);
+        setTimeout(()=>this.getOrders(false),50);
     }
 
-    private getOrders () {
+    private getOrders (loadMoreItems) {
         console.log('orders getOrders',this.CustNum);
         this.net.getOrders({
             CustNum: this.CustNum,
+            loadMoreItems: loadMoreItems,
             onSuccess: (dsOrder) => this.showOrders(dsOrder),
             onError: () => {
                 this.app.loading = false;
@@ -65,16 +66,21 @@ export class OrdersComponent implements OnInit {
         })
     }
 
-    private showOrders (dsOrder) {
+    private showOrders (dsOrder) {        
         console.log('orders showOrders',dsOrder.length);
-        this.dsOrder = dsOrder;
-        for (var i=0; i<dsOrder.length; i++) {
-            const date = new Date(dsOrder[i].OrderDate);
-            dsOrder[i].OrderDate = this.dateFormatter.format(date);
+        for (let i=0; i<dsOrder.length; i++) {
+           const date = new Date(dsOrder[i].OrderDate);
+           dsOrder[i].OrderDate = this.dateFormatter.format(date);
+           this.dsOrder.push(dsOrder[i]);
         }
         this.title = 'Customer\'s Orders';
         if (isAndroid) this.title = '< ' + this.title;
         this.app.loading = false;
+    }
+
+    private loadMoreItems () {
+        console.log('orders loadMoreItems');
+        this.getOrders(true);
     }
 
     private showOrderDetail (e) {
