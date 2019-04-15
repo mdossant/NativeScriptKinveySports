@@ -92,7 +92,7 @@ export class net {
             }, 
             (error: Kinvey.BaseError) => {
                 console.error('------------- ERROR fetching customers -------------',error.name);
-                if (data.length > 0)
+                if (data.length > 0 || params.loadMoreItems)
                     params.onSuccess(data);
                 else
                     params.onError();
@@ -180,7 +180,7 @@ export class net {
             },
             (error: Kinvey.BaseError) => {
                 console.error('------------ ERROR fetching orders -------------',error.name,data.length);
-                if (data.length > 0)
+                if (data.length > 0 || params.loadMoreItems)
                     params.onSuccess(data);
                 else
                     params.onError();
@@ -358,7 +358,7 @@ export class net {
             }, 
             (error: Kinvey.BaseError) => {
                 console.error('------------- ERROR fetching items -------------',error.name);
-                if (data.length > 0)
+                if (data.length > 0 || params.loadMoreItems)
                     params.onSuccess(data);
                 else
                     params.onError();
