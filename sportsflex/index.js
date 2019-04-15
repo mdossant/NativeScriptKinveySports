@@ -39,6 +39,7 @@ sdk.service ((err, flex) => {
     registerServiceObject('States','R');
 
     flex.functions.register('GetOrderDetail',GetOrderDetail);
+    flex.functions.register('myDataStoreModuleTest',myDataStoreModuleTest);
 
     function registerServiceObject (name,operations) {
         const obj = flex.data.serviceObject(name);
@@ -306,5 +307,21 @@ sdk.service ((err, flex) => {
             console.log('err',err);
             complete(err._errors[0]._errorMsg).runtimeError().next();
         });
+    }
+
+    function myDataStoreModuleTest (context, complete, modules) {
+        console.log('myDataStoreModuleTest MASTER APP KEY',modules.backendContext.getAppKey());
+        console.log('myDataStoreModuleTest MASTER APP SECRET',modules.backendContext.getAppSecret());
+        console.log('myDataStoreModuleTest MASTER SECRET',modules.backendContext.getMasterSecret());
+        const ds = modules.dataStore({useBl:false,useUserContext:false});
+        const StatesDS = ds.collection('SalesReps');
+        StatesDS.findById('5c3e645fa537af73b7b6dc8f', function (err, result) {
+            if (err) {
+                console.log('============ err ============',err);
+                return complete(err).runtimeError().done();
+            }
+            console.log('========= result ==========',result);
+            complete().setBody(result).ok().next();
+        });        
     }
 });

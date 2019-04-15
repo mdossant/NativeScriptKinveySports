@@ -160,9 +160,9 @@ export class OrderDetailComponent implements OnInit {
         this.title = 'Order# ' + this.Ordernum;
         if (isAndroid) this.title = '< ' + this.title;
         this.ttOrderDetail = dsOrderDetail.ttOrderDetail[0];
-        this.ttOrderDetail['_id'] = this._id;
+//        this.ttOrderDetail['_id'] = this._id;
         this.ttCustomer = dsOrderDetail.ttCustomer[0];
-        this.ttCustomer['_id'] = this._id;
+//        this.ttCustomer['_id'] = this._id;
         this.setListData();
         this.app.loading = false;
     }

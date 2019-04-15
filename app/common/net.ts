@@ -103,13 +103,15 @@ export class net {
     }
 
     // ===== getCustomer =====
-    // _id (string): customer entity id
+    // CustNum (string): customer number
     // onSuccess (method): success callback method
     // onError (method): error callback method
     public getCustomer (params) {
         console.log('net getCustomers',params._id);
         let data = {};
-        this.CustomersDS.findById(params._id).subscribe(
+        let query = new Kinvey.Query;
+        query.equalTo('CustNum',Number(params.CustNum));
+        this.CustomersDS.find(query).subscribe(
             (customer) => {
                 console.log('------------ CUSTOMER -----------',customer);
                 data = customer;
@@ -217,10 +219,41 @@ export class net {
         );
     }
 
-    // ===== getOrderDetail =====
+    // ===== getOrder =====
     // Ordernum (string): order number
     // onSuccess (method): success callback method
     // onError (method): error callback method
+    public getOrder (params) {
+        console.log('net getOrder',params.Ordernum);
+        let data = {};
+        let query = new Kinvey.Query;
+        query.equalTo('Ordernum',Number(params.Ordernum));
+        this.OrdersDS.find(query).subscribe(
+            (order) => {
+                console.log('------------ ORDER -----------',order);
+                data = order;
+            }, 
+            (error: Kinvey.BaseError) => {
+                console.error('------------ ERROR fetching order --------------',error.name);
+                if (data)
+                    params.onSuccess(data);
+                else
+                    params.onError();
+                return;
+            },
+            () => params.onSuccess(data)
+        );
+    }
+
+    // getOrderDetail has two examples below: using flex / JSDO invoke and kinvey SDK
+    // flex won't work offline whereas kinvey SDK does -- check your requirements/constraints, choose wisely
+
+    // ===== getOrderDetail =====
+    // Ordernum (string): order number
+    // onSuccess (method): success callback method
+    // onError (method): error callback method    
+    // note: flex > JSDO > PASOE REST invoke (will not work offline)
+    /*
     public getOrderDetail (params) {
         console.log('net getOrderDetail',params.Ordernum);
         Kinvey.CustomEndpoint.execute('GetOrderDetail',{Ordernum: params.Ordernum})
@@ -232,6 +265,43 @@ export class net {
                 console.error('------------ ERROR fetching order detail -------------',error.name);
                 params.onError();
         });
+    }
+    */
+
+    // ===== getOrderDetail =====
+    // Ordernum (string): order number
+    // onSuccess (method): success callback method
+    // onError (method): error callback method
+    // note: kinvey SDK (works offline)
+    public getOrderDetail (params) {
+        console.log('net getOrderDetail',params.Ordernum);
+        let dsOrderDetail = {
+            ttOrderDetail: [{}],
+            ttCustomer: [{}],
+            ttOrderLine: [{}]
+        };
+        this.getOrder({
+            Ordernum: params.Ordernum,
+            onSuccess: (ttOrder) => {
+                dsOrderDetail.ttOrderDetail = ttOrder;
+                this.getCustomer({
+                    CustNum: ttOrder[0].CustNum,
+                    onSuccess: (ttCustomer) => {
+                        dsOrderDetail.ttCustomer = ttCustomer;
+                        this.getOrderLines({
+                            Ordernum: ttOrder[0].Ordernum,
+                            onSuccess: (ttOrderLine) => {
+                                dsOrderDetail.ttOrderLine = ttOrderLine;
+                                params.onSuccess(dsOrderDetail);
+                            },
+                            onError: () => params.onError()
+                        });
+                    },
+                    onError: () => params.onError()
+                });
+            },
+            onError: () => params.onError()
+        })
     }
 
     // ===== getOrderLine =====
