@@ -15,8 +15,8 @@ export class app {
         appKey: 'kid_B1fDHsXzN',
         appSecret: 'ece2258ff70f4cc8934f5dad8913d880',
         limit: 25,
-        version: '0-0-4',
-        date: 'April 11, 2019'
+        version: '0-0-5',
+        date: 'April 18, 2019'
     }
     public loading: Boolean;
     private loadingState: Boolean;
