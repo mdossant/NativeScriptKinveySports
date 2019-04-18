@@ -8,6 +8,7 @@ webpack.config.js
 app/.vscode
 **/*.js
 **/*.log
+**/*.DS_Store
 .vscode
 tsconfig.tns.json
 sportsflex/.kinvey
