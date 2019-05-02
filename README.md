@@ -30,4 +30,5 @@ b) There are two samples of the multi-table complex API to get order detail: Get
 c) I continuously enhance these features so make sure to update (pull) from the repository at any time. The Flex data connector is under the sportsflex subdirectory. Although it is written to be as generic and reusable as possible, this may not necessarily be be the case at any given application -- feel free to copy and adapt to your needs. Last but not least, there are still some MongoDB query properties I need to map to JFP, but the most important CRUD stuff works fine.
 
 Mauricio dos Santos
+
 April 18 2019

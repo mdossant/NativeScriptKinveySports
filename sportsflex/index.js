@@ -7,8 +7,8 @@ const sdk = require('kinvey-flex-sdk');
 const progressCore = require('./jsdo/progress.core');
 const ngDataSource = require('./jsdo/progress.data.node');
 
-const serviceURI = 'http://ec2-34-228-170-4.compute-1.amazonaws.com:8080';
-const catalogURI = 'http://ec2-34-228-170-4.compute-1.amazonaws.com:8080/static/SportsREST.json';
+const serviceURI = 'http://ec2-18-208-224-153.compute-1.amazonaws.com:8080';
+const catalogURI = 'http://ec2-18-208-224-153.compute-1.amazonaws.com:8080/static/SportsREST.json';
 const username = 'm';
 const password = 'm';
 
