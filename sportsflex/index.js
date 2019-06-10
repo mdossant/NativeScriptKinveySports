@@ -7,11 +7,6 @@ const sdk = require('kinvey-flex-sdk');
 const progressCore = require('./jsdo/progress.core');
 const ngDataSource = require('./jsdo/progress.data.node');
 
-const serviceURI = 'http://ec2-18-208-224-153.compute-1.amazonaws.com:8080';
-const catalogURI = 'http://ec2-18-208-224-153.compute-1.amazonaws.com:8080/static/SportsREST.json';
-const username = 'm';
-const password = 'm';
-
 sdk.service ((err, flex) => {
 
     // JSDO needs to know temp-table
@@ -57,6 +52,32 @@ sdk.service ((err, flex) => {
         if (operations.indexOf('D') > -1) {
             obj.onDeleteByQuery(deleteByQuery);
         }
+    }
+
+    function getConfig (modules, onSuccess) {
+        console.log('getConfig');
+        console.log('getConfig MASTER APP KEY',modules.backendContext.getAppKey());
+        console.log('getConfig MASTER APP SECRET',modules.backendContext.getAppSecret());
+        console.log('getConfig MASTER SECRET',modules.backendContext.getMasterSecret());
+        let config;
+        const ds = modules.dataStore({useBl:false,useUserContext:false});
+        const ConfigDS = ds.collection('Config');
+        const query = new modules.Query();
+        query.equalTo('type','REST');
+        ConfigDS.find(query, function (err, results) {
+            if (err) {
+                console.log('============ getConfig err ============',err);
+                return complete(err).runtimeError().done();
+            }
+            config = {
+                serviceURI: results[0].serviceURI,
+                catalogURI: results[0].catalogURI,
+                username: results[0].username,
+                password: results[0].password
+            };
+            console.log('getConfig serviceURI',config.serviceURI);
+            onSuccess(config);
+        });
     }
 
     function mapQueryToJFP (query) {
@@ -109,36 +130,38 @@ sdk.service ((err, flex) => {
         console.log('top', top);
         console.log('orderBy', orderBy);
 
-        progressCore.progress.data.getSession({
-            name: 'sportsflex',
-            serviceURI: serviceURI,
-            catalogURI: catalogURI,
-            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
-            username: username,
-            password: password,
-        }).then(()=>{
-            const jsdo = new progressCore.progress.data.JSDO({
-                name: context.serviceObjectName
+        getConfig(modules, function(config) {
+            progressCore.progress.data.getSession({
+                name: 'sportsflex',
+                serviceURI: config.serviceURI,
+                catalogURI: config.catalogURI,
+                authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
+                username: config.username,
+                password: config.password,
+            }).then(()=>{
+                const jsdo = new progressCore.progress.data.JSDO({
+                    name: context.serviceObjectName
+                });
+                const ds = new ngDataSource.DataSource({
+                    jsdo: jsdo,
+                    tableRef: tables[context.serviceObjectName]
+                });
+                return ds.read(
+                    filter=JSON.stringify({
+                        ablFilter: ablFilter,
+                        orderBy: orderBy,
+                        top: top,
+                        skip: skip
+                    })
+                ).toPromise();
+            }).then((response) => {
+                console.log('number of records retrieved',response.data.length);
+                complete().setBody(JSON.stringify(response.data)).ok().next();
+            }).catch((err) => {
+                console.log('err.message',err.message);
+                console.log('err.stack',err.stack);
+                complete(err).runtimeError().next();
             });
-            const ds = new ngDataSource.DataSource({
-                jsdo: jsdo,
-                tableRef: tables[context.serviceObjectName]
-            });
-            return ds.read(
-                filter=JSON.stringify({
-                    ablFilter: ablFilter,
-                    orderBy: orderBy,
-                    top: top,
-                    skip: skip
-                })
-            ).toPromise();
-        }).then((response) => {
-            console.log('number of records retrieved',response.data.length);
-            complete().setBody(JSON.stringify(response.data)).ok().next();
-        }).catch((err) => {
-            console.log('err.message',err.message);
-            console.log('err.stack',err.stack);
-            complete(err).runtimeError().next();
         });
     }
 
@@ -148,40 +171,42 @@ sdk.service ((err, flex) => {
         console.log('service object', context.serviceObjectName);
         console.log('table', tables[context.serviceObjectName]);
 
-        progressCore.progress.data.getSession({
-            name: 'sportsflex',
-            serviceURI: serviceURI,
-            catalogURI: catalogURI,
-            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
-            username: username,
-            password: password,
-        }).then(() => {
-            const jsdo = new progressCore.progress.data.JSDO({
-                name: context.serviceObjectName
+        getConfig(modules, function(config) {
+            progressCore.progress.data.getSession({
+                name: 'sportsflex',
+                serviceURI: config.serviceURI,
+                catalogURI: config.catalogURI,
+                authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
+                username: config.username,
+                password: config.password,
+            }).then(() => {
+                const jsdo = new progressCore.progress.data.JSDO({
+                    name: context.serviceObjectName
+                });
+                const ds = new ngDataSource.DataSource({
+                    jsdo: jsdo,
+                    tableRef: tables[context.serviceObjectName]
+                });
+                ds.create(context.body);
+                return ds.saveChanges().toPromise();
+            }).then((response) => {
+                if (response.dsOrder) {
+                    console.log('record created (Order)',response.dsOrder.ttOrder[0].Ordernum);
+                    complete().setBody(JSON.stringify(response.dsOrder.ttOrder[0])).ok().next();
+                }
+                else if (response.dsOrderLine) {
+                    console.log('record created (OrderLine)',response.dsOrderLine.ttOrderLine[0].Ordernum);
+                    complete().setBody(JSON.stringify(response.dsOrderLine.ttOrderLine[0])).ok().next();
+                }
+                else {
+                    console.log('record created (other)',response);
+                    complete().setBody(JSON.stringify(response)).ok().next();
+                }
+            }).catch((err) => {
+                console.log('err.message',err.message);
+                console.log('err.stack',err.stack);
+                complete(err).runtimeError().next();
             });
-            const ds = new ngDataSource.DataSource({
-                jsdo: jsdo,
-                tableRef: tables[context.serviceObjectName]
-            });
-            ds.create(context.body);
-            return ds.saveChanges().toPromise();
-        }).then((response) => {
-            if (response.dsOrder) {
-                console.log('record created (Order)',response.dsOrder.ttOrder[0].Ordernum);
-                complete().setBody(JSON.stringify(response.dsOrder.ttOrder[0])).ok().next();
-            }
-            else if (response.dsOrderLine) {
-                console.log('record created (OrderLine)',response.dsOrderLine.ttOrderLine[0].Ordernum);
-                complete().setBody(JSON.stringify(response.dsOrderLine.ttOrderLine[0])).ok().next();
-            }
-            else {
-                console.log('record created (other)',response);
-                complete().setBody(JSON.stringify(response)).ok().next();
-            }
-        }).catch((err) => {
-            console.log('err.message',err.message);
-            console.log('err.stack',err.stack);
-            complete(err).runtimeError().next();
         });
     }
 
@@ -198,38 +223,40 @@ sdk.service ((err, flex) => {
             filter = filter + key[i] + ' = "' + context.body[key[i]] + '"';
         }
         
-        progressCore.progress.data.getSession({
-            name: 'sportsflex',
-            serviceURI: serviceURI,
-            catalogURI: catalogURI,
-            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
-            username: username,
-            password: password,
-        }).then(() => {
-            jsdo = new progressCore.progress.data.JSDO({
-                name: context.serviceObjectName
-            });
-            ds = new ngDataSource.DataSource({
-                jsdo: jsdo,
-                tableRef: tables[context.serviceObjectName]
-            });
-            return ds.read(filter=filter).toPromise();
-        }).then((response) => {
-            console.log('number of records retrieved',response.data.length);
-            if (response.data.length === 0)
-                throw({message:'no records found to update'});
-            let body = context.body;
-            body._id = response.data[0]._id;
-            this.ds.update(body);
-            return this.ds.saveChanges().toPromise();
-        }).then((result) => {
-            console.log('========== record updated',result);
-            complete().setBody('RECORD UPDATED').ok().next();
-        }).catch((err) => {
-            console.log('err.message',err.message);
-            console.log('err.stack',err.stack);
-            complete(err).runtimeError().next();
-        });        
+        getConfig(modules, function(config) {
+            progressCore.progress.data.getSession({
+                name: 'sportsflex',
+                serviceURI: config.serviceURI,
+                catalogURI: config.catalogURI,
+                authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
+                username: config.username,
+                password: config.password,
+            }).then(() => {
+                jsdo = new progressCore.progress.data.JSDO({
+                    name: context.serviceObjectName
+                });
+                ds = new ngDataSource.DataSource({
+                    jsdo: jsdo,
+                    tableRef: tables[context.serviceObjectName]
+                });
+                return ds.read(filter=filter).toPromise();
+            }).then((response) => {
+                console.log('number of records retrieved',response.data.length);
+                if (response.data.length === 0)
+                    throw({message:'no records found to update'});
+                let body = context.body;
+                body._id = response.data[0]._id;
+                this.ds.update(body);
+                return this.ds.saveChanges().toPromise();
+            }).then((result) => {
+                console.log('========== record updated',result);
+                complete().setBody('RECORD UPDATED').ok().next();
+            }).catch((err) => {
+                console.log('err.message',err.message);
+                console.log('err.stack',err.stack);
+                complete(err).runtimeError().next();
+            });        
+        });
     }
 
     function deleteByQuery (context, complete, modules) {
@@ -241,37 +268,39 @@ sdk.service ((err, flex) => {
         // ablFilter: query filter params
         let ablFilter = mapQueryToJFP(context.query);
         
-        progressCore.progress.data.getSession({
-            name: 'sportsflex',
-            serviceURI: serviceURI,
-            catalogURI: catalogURI,
-            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
-            username: username,
-            password: password,
-        }).then(() => {
-            jsdo = new progressCore.progress.data.JSDO({
-                name: context.serviceObjectName
+        getConfig(modules, function(config) {
+            progressCore.progress.data.getSession({
+                name: 'sportsflex',
+                serviceURI: config.serviceURI,
+                catalogURI: config.catalogURI,
+                authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
+                username: config.username,
+                password: config.password,
+            }).then(() => {
+                jsdo = new progressCore.progress.data.JSDO({
+                    name: context.serviceObjectName
+                });
+                ds = new ngDataSource.DataSource({
+                    jsdo: jsdo,
+                    tableRef: tables[context.serviceObjectName]
+                });
+                return ds.read(
+                    filter=JSON.stringify({ablFilter: ablFilter})
+                ).toPromise();
+            }).then((response) => {
+                console.log('number of records retrieved',response.data.length);
+                if (response.data.length === 0)
+                    throw({message:'no records found to delete'});
+                this.ds.remove({_id: response.data[0]._id});
+                return this.ds.saveChanges().toPromise();
+            }).then(() => {
+                console.log('record deleted');
+                complete().setBody('RECORD DELETED').ok().next();
+            }).catch((err) => {
+                console.log('err.message',err.message);
+                console.log('err.stack',err.stack);
+                complete(err).runtimeError().next();
             });
-            ds = new ngDataSource.DataSource({
-                jsdo: jsdo,
-                tableRef: tables[context.serviceObjectName]
-            });
-            return ds.read(
-                filter=JSON.stringify({ablFilter: ablFilter})
-            ).toPromise();
-        }).then((response) => {
-            console.log('number of records retrieved',response.data.length);
-            if (response.data.length === 0)
-                throw({message:'no records found to delete'});
-            this.ds.remove({_id: response.data[0]._id});
-            return this.ds.saveChanges().toPromise();
-        }).then(() => {
-            console.log('record deleted');
-            complete().setBody('RECORD DELETED').ok().next();
-        }).catch((err) => {
-            console.log('err.message',err.message);
-            console.log('err.stack',err.stack);
-            complete(err).runtimeError().next();
         });
     }
 
@@ -287,25 +316,27 @@ sdk.service ((err, flex) => {
         console.log('GetOrderDetail context',JSON.stringify(context));
         console.log('GetOrderDetail body',JSON.stringify(context.body));
 
-        progressCore.progress.data.getSession({
-            name: 'sportsflex',
-            serviceURI: serviceURI,
-            catalogURI: catalogURI,
-            authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
-            username: username,
-            password: password,
-        }).then(()=>{
-            const jsdo = new progressCore.progress.data.JSDO({
-                name: 'Orders'
+        getConfig(modules, function(config) {
+            progressCore.progress.data.getSession({
+                name: 'sportsflex',
+                serviceURI: config.serviceURI,
+                catalogURI: config.catalogURI,
+                authenticationModel: progressCore.progress.data.Session.AUTH_TYPE_BASIC,
+                username: config.username,
+                password: config.password,
+            }).then(()=>{
+                const jsdo = new progressCore.progress.data.JSDO({
+                    name: 'Orders'
+                });
+                return jsdo.invoke('GetOrderDetail',context.body);
+            }).then((jsdo) => {
+                console.log('jsdo.request.response',jsdo.request.response);
+                complete().setBody(jsdo.request.response.dsOrderDetail).ok().next();
+            }).catch((jsdo) => {
+                const err = JSON.parse(jsdo.request.xhr.responseText);
+                console.log('err',err);
+                complete(err._errors[0]._errorMsg).runtimeError().next();
             });
-            return jsdo.invoke('GetOrderDetail',context.body);
-        }).then((jsdo) => {
-            console.log('jsdo.request.response',jsdo.request.response);
-            complete().setBody(jsdo.request.response.dsOrderDetail).ok().next();
-        }).catch((jsdo) => {
-            const err = JSON.parse(jsdo.request.xhr.responseText);
-            console.log('err',err);
-            complete(err._errors[0]._errorMsg).runtimeError().next();
         });
     }
 
@@ -314,14 +345,20 @@ sdk.service ((err, flex) => {
         console.log('myDataStoreModuleTest MASTER APP SECRET',modules.backendContext.getAppSecret());
         console.log('myDataStoreModuleTest MASTER SECRET',modules.backendContext.getMasterSecret());
         const ds = modules.dataStore({useBl:false,useUserContext:false});
-        const StatesDS = ds.collection('SalesReps');
-        StatesDS.findById('5c3e645fa537af73b7b6dc8f', function (err, result) {
+        const ConfigDS = ds.collection('Config');
+        const query = new modules.Query();
+        query.equalTo('type','REST');
+        ConfigDS.find(query, function (err, config) {
             if (err) {
                 console.log('============ err ============',err);
                 return complete(err).runtimeError().done();
             }
-            console.log('========= result ==========',result);
-            complete().setBody(result).ok().next();
-        });        
+            console.log('========= config ==========',config);
+            console.log(config[0].serviceURI);
+            console.log(config[0].catalogURI);
+            console.log(config[0].username);
+            console.log(config[0].password);
+            complete().setBody(config).ok().next();
+        });
     }
 });

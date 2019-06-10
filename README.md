@@ -19,7 +19,7 @@ Features:
 * multi-table flex function using JSDO invoke
 * rapid data / progress data for small static tables e.g. states
 * kinvey data store for images
-* arcade AWS vm PASOE basic auth
+* configurable arcade AWS vm with PASOE basic auth (will no longer require flex code changes and build when AWS vm expires)
 
 Notes:
 ------
@@ -31,4 +31,4 @@ c) I continuously enhance these features so make sure to update (pull) from the 
 
 Mauricio dos Santos
 
-April 18 2019
+June 10 2019
